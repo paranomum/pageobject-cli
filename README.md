@@ -1,1 +1,1 @@
-# pageobject-cli
+# page-object-cli
