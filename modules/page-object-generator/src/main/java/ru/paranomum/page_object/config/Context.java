@@ -22,19 +22,16 @@ package ru.paranomum.page_object.config;
  * @param <TSpecDocument> the type of the input spec document.
  */
 public class Context<TSpecDocument> {
-    private TSpecDocument specDocument;
     private GeneratorSettings generatorSettings;
     private WorkflowSettings workflowSettings;
 
     /**
      * Instantiates a new Context.
      *
-     * @param specDocument      the spec document
      * @param generatorSettings the generator settings
      * @param workflowSettings  the workflow settings
      */
-    public Context(TSpecDocument specDocument, GeneratorSettings generatorSettings, WorkflowSettings workflowSettings) {
-        this.specDocument = specDocument;
+    public Context(GeneratorSettings generatorSettings, WorkflowSettings workflowSettings) {
         this.generatorSettings = generatorSettings;
         this.workflowSettings = workflowSettings;
     }
@@ -46,15 +43,6 @@ public class Context<TSpecDocument> {
      */
     public GeneratorSettings getGeneratorSettings() {
         return generatorSettings;
-    }
-
-    /**
-     * Gets the spec document.
-     *
-     * @return the spec document
-     */
-    public TSpecDocument getSpecDocument() {
-        return specDocument;
     }
 
     /**

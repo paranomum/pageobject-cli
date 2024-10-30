@@ -20,14 +20,11 @@ package ru.paranomum.page_object.config;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.paranomum.page_object.ClientOptInput;
-import ru.paranomum.page_object.CodegenConfig;
-import ru.paranomum.page_object.TemplatingEngineLoader;
+import ru.paranomum.page_object.*;
+import ru.paranomum.page_object.api.TemplateDefinition;
 import ru.paranomum.page_object.api.TemplatingEngineAdapter;
 
 import java.util.*;
-
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 /**
  * A class which manages the contextual configuration for code generation.
@@ -45,6 +42,9 @@ public class CodegenConfigurator {
     private WorkflowSettings.Builder workflowSettingsBuilder = WorkflowSettings.newBuilder();
 
     private String generatorName;
+    private String inputSpec;
+
+    private List<TemplateDefinition> userDefinedTemplates = new ArrayList<>();
 
     public CodegenConfigurator() {
 
@@ -65,6 +65,12 @@ public class CodegenConfigurator {
         return this;
     }
 
+    public CodegenConfigurator setInputSpec(String inputSpec) {
+        this.inputSpec = inputSpec;
+        workflowSettingsBuilder.withInputSpec(inputSpec);
+        return this;
+    }
+
     public CodegenConfigurator setOutputDir(String outputDir) {
         workflowSettingsBuilder.withOutputDir(outputDir);
         return this;
@@ -74,6 +80,7 @@ public class CodegenConfigurator {
     public Context<?> toContext() {
         Validate.notEmpty(generatorName, "generator name must be specified");
         Validate.notEmpty(inputSpec, "input spec must be specified");
+//        Validate.notEmpty(inputSpec, "input spec must be specified");
 
         GeneratorSettings generatorSettings = generatorSettingsBuilder.build();
         CodegenConfig config = CodegenConfigLoader.forName(generatorSettings.getGeneratorName());
@@ -85,7 +92,7 @@ public class CodegenConfigurator {
             GlobalSettings.setProperty(entry.getKey(), entry.getValue());
         }
 
-        return new Context<>(specification, generatorSettings, workflowSettings);
+        return new Context<>(generatorSettings, workflowSettings);
     }
 
     public ClientOptInput toClientOptInput() {
@@ -116,11 +123,9 @@ public class CodegenConfigurator {
             config.additionalProperties().put(CodegenConstants.TEMPLATE_DIR, workflowSettings.getTemplateDir());
         }
 
-        ClientOptInput input = new ClientOptInput()
+        return new ClientOptInput()
                 .config(config)
                 .generatorSettings(generatorSettings)
                 .userDefinedTemplates(userDefinedTemplates);
-
-        return input.openAPI((OpenAPI)context.getSpecDocument());
     }
 }
