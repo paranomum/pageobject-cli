@@ -28,6 +28,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>modules/page-object-generator</module>
                 <module>modules/page-object-cli</module>
             </modules>
         </profile>

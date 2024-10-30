@@ -78,12 +78,10 @@ public class CodegenConfigurator {
 
     @SuppressWarnings("WeakerAccess")
     public Context<?> toContext() {
-        Validate.notEmpty(generatorName, "generator name must be specified");
+//        Validate.notEmpty(generatorName, "generator name must be specified");
         Validate.notEmpty(inputSpec, "input spec must be specified");
-//        Validate.notEmpty(inputSpec, "input spec must be specified");
 
         GeneratorSettings generatorSettings = generatorSettingsBuilder.build();
-        CodegenConfig config = CodegenConfigLoader.forName(generatorSettings.getGeneratorName());
 
         // at this point, all "additionalProperties" are set, and are now immutable per GeneratorSettings instance.
         WorkflowSettings workflowSettings = workflowSettingsBuilder.build();
@@ -105,6 +103,7 @@ public class CodegenConfigurator {
         CodegenConfig config = CodegenConfigLoader.forName(generatorSettings.getGeneratorName());
 
         // TODO: Work toward CodegenConfig having a "WorkflowSettings" property, or better a "Workflow" object which itself has a "WorkflowSettings" property.
+        config.setInputSpec(workflowSettings.getInputSpec());
         config.setOutputDir(workflowSettings.getOutputDir());
 
         TemplatingEngineAdapter templatingEngine = TemplatingEngineLoader.byIdentifier(workflowSettings.getTemplatingEngineName());

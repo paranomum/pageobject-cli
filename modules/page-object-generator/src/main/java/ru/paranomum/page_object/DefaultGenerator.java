@@ -17,17 +17,16 @@
 
 package ru.paranomum.page_object;
 import lombok.Getter;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOCase;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.paranomum.page_object.api.TemplateDefinition;
 import ru.paranomum.page_object.api.TemplatePathLocator;
 import ru.paranomum.page_object.api.TemplateProcessor;
 import ru.paranomum.page_object.api.TemplatingEngineAdapter;
-import ru.paranomum.page_object.config.GlobalSettings;
 import ru.paranomum.page_object.templating.CommonTemplateContentLocator;
 import ru.paranomum.page_object.templating.GeneratorTemplateContentLocator;
 import ru.paranomum.page_object.templating.MustacheEngineAdapter;
@@ -35,19 +34,8 @@ import ru.paranomum.page_object.templating.TemplateManagerOptions;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.StringUtils.removeStart;
 
 @SuppressWarnings("rawtypes")
 public class DefaultGenerator implements Generator {
@@ -62,6 +50,8 @@ public class DefaultGenerator implements Generator {
     private String basePath;
     private String contextPath;
     private Map<String, String> generatorPropertyDefaults = new HashMap<>();
+
+    private Document doc = null;
     /**
      *  Retrieves an instance to the configured template processor, available after user-defined options are
      *  applied via 
@@ -116,6 +106,13 @@ public class DefaultGenerator implements Generator {
 
     @Override
     public List<File> generate() {
+        try {
+            doc = Jsoup.parse(new File(config.getInputSpec()));
+        } catch(IOException ignore) {}
+        Elements inputs = doc.select("input");
+        for (Element l : inputs) {
+            LOGGER.info("Element - " + l + ", attribute @placeholder - " + l.attr("placeholder"));
+        }
         return null;
     }
 

@@ -19,6 +19,7 @@ package ru.paranomum.page_object;
 
 import com.samskivert.mustache.Mustache.Compiler;
 import ru.paranomum.page_object.api.TemplatingEngineAdapter;
+import ru.paranomum.page_object.meta.GeneratorMetadata;
 
 import java.io.File;
 import java.util.List;
@@ -29,6 +30,12 @@ public interface CodegenConfig {
     String getFilesMetadataFilename();
 
     String getVersionMetadataFilename();
+
+    void postProcess();
+
+    GeneratorMetadata getGeneratorMetadata();
+
+    String sanitizeName(String text);
 
     String getName();
 
@@ -154,8 +161,6 @@ public interface CodegenConfig {
 
     TemplatingEngineAdapter processTemplatingEngine(TemplatingEngineAdapter templatingEngine);
 
-    String sanitizeTag(String tag);
-
     String toApiFilename(String name);
 
     String toModelFilename(String name);
@@ -246,14 +251,6 @@ public interface CodegenConfig {
     void setIgnoreFilePathOverride(String ignoreFileOverride);
 
     String getIgnoreFilePathOverride();
-
-    String toBooleanGetter(String name);
-
-    String toSetter(String name);
-
-    String toGetter(String name);
-
-    String sanitizeName(String name);
 
     void postProcessFile(File file, String fileType);
 

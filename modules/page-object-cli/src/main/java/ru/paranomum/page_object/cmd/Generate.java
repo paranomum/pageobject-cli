@@ -19,11 +19,14 @@ package ru.paranomum.page_object.cmd;
 
 import io.airlift.airline.Command;
 import io.airlift.airline.Option;
+import org.apache.commons.lang3.StringUtils;
 import ru.paranomum.page_object.ClientOptInput;
 import ru.paranomum.page_object.DefaultGenerator;
 import ru.paranomum.page_object.Generator;
 import ru.paranomum.page_object.GeneratorNotFoundException;
 import ru.paranomum.page_object.config.CodegenConfigurator;
+
+import java.io.File;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -34,23 +37,50 @@ public class Generate extends PageObjectGeneratorCommand {
     CodegenConfigurator configurator;
     Generator generator;
 
-    @Option(name = {"-g", "--generator-name"}, title = "generator name",
-            description = "generator to use (see list command for list)")
-    private String generatorName;
+//    @Option(name = {"-g", "--generator-name"}, title = "generator name",
+//            description = "generator to use (see list command for list)")
+//    private String generatorName;
 
     @Option(name = {"-o", "--output"}, title = "output directory",
             description = "where to write the generated files (current dir by default)")
     private String output = "";
 
+    @Option(name = {"-i", "--input-spec"}, title = "output directory",
+            description = "where to write the generated files (current dir by default)")
+    private String spec = "";
+
     @Override
     public void execute() {
 
-        if (isNotEmpty(generatorName)) {
-            configurator.setGeneratorName(generatorName);
+//        if (isNotEmpty(generatorName)) {
+//            configurator.setGeneratorName(generatorName);
+//        }
+
+        if (configurator == null) {
+            if (StringUtils.isEmpty(spec)) {
+                // if user doesn't pass configFile and does not pass spec, we can fail immediately because one of these two is required to run.
+                System.err.println("[error] Required option '-i' is missing");
+                System.exit(1);
+            }
+
+            // if a config file wasn't specified, or we were unable to read it
+            if (configurator == null) {
+                // create a fresh configurator
+                configurator = new CodegenConfigurator();
+            }
         }
 
         if (isNotEmpty(output)) {
             configurator.setOutputDir(output);
+        }
+
+        if (isNotEmpty(spec)) {
+            if (!new File(spec).exists()) {
+                System.err.println("[error] The spec file is not found: " + spec);
+                System.err.println("[error] Check the path of the html and try again.");
+                System.exit(1);
+            }
+            configurator.setInputSpec(spec);
         }
 
         try {
