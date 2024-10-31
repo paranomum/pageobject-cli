@@ -15,15 +15,12 @@
  * limitations under the License.
  */
 
-package ru.paranomum.page_object;
+package ru.paranomum.page_object.languages.features;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
+public interface SwaggerFeatures {
 
-public interface Generator {
-    Generator opts(ClientOptInput opts);
+    String USE_SWAGGER_FEATURE = "useSwaggerFeature";
 
-    List<File> generate() throws URISyntaxException, IOException;
+    void setUseSwaggerFeature(boolean useSwaggerFeature);
+
 }

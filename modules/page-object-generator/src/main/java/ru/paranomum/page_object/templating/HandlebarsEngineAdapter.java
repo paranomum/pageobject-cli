@@ -32,6 +32,7 @@ import com.github.jknack.handlebars.io.TemplateSource;
 import lombok.Setter;
 import ru.paranomum.page_object.api.AbstractTemplatingEngineAdapter;
 import ru.paranomum.page_object.api.TemplatingExecutor;
+import ru.paranomum.page_object.model.ModelCodegen;
 import ru.paranomum.page_object.templating.handlebars.AccessAwareFieldValueResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +63,7 @@ public class HandlebarsEngineAdapter extends AbstractTemplatingEngineAdapter {
 
     @Override
     public String compileTemplate(TemplatingExecutor executor,
-                                  Map<String, Object> bundle, String templateFile) throws IOException {
+                                  ModelCodegen bundle, String templateFile) throws IOException {
         TemplateLoader loader = new AbstractTemplateLoader() {
             @Override
             public TemplateSource sourceAt(String location) {

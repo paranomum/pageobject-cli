@@ -1,7 +1,6 @@
 package ru.paranomum.page_object.templating.handlebars;
 
 import com.github.jknack.handlebars.context.FieldValueResolver;
-import lombok.var;
 
 import java.lang.reflect.AccessibleObject;
 import java.util.Set;

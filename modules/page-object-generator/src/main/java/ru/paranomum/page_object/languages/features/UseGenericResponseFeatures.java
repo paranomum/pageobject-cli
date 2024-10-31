@@ -15,15 +15,12 @@
  * limitations under the License.
  */
 
-package ru.paranomum.page_object;
+package ru.paranomum.page_object.languages.features;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
+public interface UseGenericResponseFeatures {
 
-public interface Generator {
-    Generator opts(ClientOptInput opts);
+    // Language supports generating generic Jaxrs or native return types
+    String USE_GENERIC_RESPONSE = "useGenericResponse";
 
-    List<File> generate() throws URISyntaxException, IOException;
+    void setUseGenericResponse(boolean useGenericResponse);
 }

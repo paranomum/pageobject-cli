@@ -15,15 +15,12 @@
  * limitations under the License.
  */
 
-package ru.paranomum.page_object;
+package ru.paranomum.page_object.languages.features;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
+/**
+ * Features supported by CXF 3 (client + server)
+ */
+public interface CXFFeatures extends LoggingFeatures, GzipFeatures, BeanValidationFeatures {
 
-public interface Generator {
-    Generator opts(ClientOptInput opts);
 
-    List<File> generate() throws URISyntaxException, IOException;
 }

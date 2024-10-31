@@ -16,6 +16,8 @@
 
 package ru.paranomum.page_object.api;
 
+import ru.paranomum.page_object.model.ModelCodegen;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,7 +66,7 @@ public interface TemplatingEngineAdapter {
      * @return the processed template result
      * @throws IOException an error occurred in the template processing
      */
-    String compileTemplate(TemplatingExecutor executor, Map<String, Object> bundle,
+    String compileTemplate(TemplatingExecutor executor, ModelCodegen bundle,
                            String templateFile) throws IOException;
 
     /**

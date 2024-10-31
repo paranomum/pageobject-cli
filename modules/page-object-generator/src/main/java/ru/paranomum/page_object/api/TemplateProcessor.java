@@ -1,5 +1,7 @@
 package ru.paranomum.page_object.api;
 
+import ru.paranomum.page_object.model.ModelCodegen;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -19,7 +21,7 @@ public interface TemplateProcessor {
      * @return The actual file
      * @throws IOException If file cannot be written.
      */
-    File write(Map<String, Object> data, String template, File target) throws IOException;
+    File write(ModelCodegen data, String template, File target) throws IOException;
 
     /**
      * Write bytes to a file

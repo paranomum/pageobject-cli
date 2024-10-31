@@ -26,6 +26,8 @@ import ru.paranomum.page_object.api.TemplatingEngineAdapter;
 
 import java.util.*;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 /**
  * A class which manages the contextual configuration for code generation.
  * This includes configuring the generator, templating, and the workflow which orchestrates these.
@@ -43,11 +45,18 @@ public class CodegenConfigurator {
 
     private String generatorName;
     private String inputSpec;
+    private String templatingEngineName;
 
     private List<TemplateDefinition> userDefinedTemplates = new ArrayList<>();
 
     public CodegenConfigurator() {
 
+    }
+
+    public CodegenConfigurator setTemplatingEngineName(String templatingEngineName) {
+        this.templatingEngineName = templatingEngineName;
+        workflowSettingsBuilder.withTemplatingEngineName(templatingEngineName);
+        return this;
     }
 
     /**
@@ -82,6 +91,14 @@ public class CodegenConfigurator {
         Validate.notEmpty(inputSpec, "input spec must be specified");
 
         GeneratorSettings generatorSettings = generatorSettingsBuilder.build();
+        CodegenConfig config = CodegenConfigLoader.forName("java");
+        if (isEmpty(templatingEngineName)) {
+            // if templatingEngineName is empty check the config for a default
+            String defaultTemplatingEngine = config.defaultTemplatingEngine();
+            workflowSettingsBuilder.withTemplatingEngineName(defaultTemplatingEngine);
+        } else {
+            workflowSettingsBuilder.withTemplatingEngineName(templatingEngineName);
+        }
 
         // at this point, all "additionalProperties" are set, and are now immutable per GeneratorSettings instance.
         WorkflowSettings workflowSettings = workflowSettingsBuilder.build();
@@ -100,7 +117,7 @@ public class CodegenConfigurator {
 
         // We load the config via generatorSettings.getGeneratorName() because this is guaranteed to be set
         // regardless of entrypoint (CLI sets properties on this type, config deserialization sets on generatorSettings).
-        CodegenConfig config = CodegenConfigLoader.forName(generatorSettings.getGeneratorName());
+        CodegenConfig config = CodegenConfigLoader.forName("java");
 
         // TODO: Work toward CodegenConfig having a "WorkflowSettings" property, or better a "Workflow" object which itself has a "WorkflowSettings" property.
         config.setInputSpec(workflowSettings.getInputSpec());

@@ -8,6 +8,7 @@ import ru.paranomum.page_object.api.TemplatePathLocator;
 import ru.paranomum.page_object.api.TemplateProcessor;
 import ru.paranomum.page_object.api.TemplatingEngineAdapter;
 import ru.paranomum.page_object.api.TemplatingExecutor;
+import ru.paranomum.page_object.model.ModelCodegen;
 import ru.paranomum.page_object.templating.TemplateManagerOptions;
 import ru.paranomum.page_object.templating.TemplateNotFoundException;
 
@@ -163,7 +164,7 @@ public class TemplateManager implements TemplatingExecutor, TemplateProcessor {
      * @return The actual file
      */
     @Override
-    public File write(Map<String, Object> data, String template, File target) throws IOException {
+    public File write(ModelCodegen data, String template, File target) throws IOException {
         if (this.engineAdapter.handlesFile(template)) {
             // Only pass files with valid endings through template engine
             String templateContent = this.engineAdapter.compileTemplate(this, data, template);

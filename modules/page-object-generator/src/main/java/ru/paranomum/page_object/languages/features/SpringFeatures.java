@@ -15,15 +15,20 @@
  * limitations under the License.
  */
 
-package ru.paranomum.page_object;
+package ru.paranomum.page_object.languages.features;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
+public interface SpringFeatures extends BeanValidationFeatures {
 
-public interface Generator {
-    Generator opts(ClientOptInput opts);
+    String GENERATE_SPRING_APPLICATION = "generateSpringApplication";
 
-    List<File> generate() throws URISyntaxException, IOException;
+    String GENERATE_SPRING_BOOT_APPLICATION = "generateSpringBootApplication";
+
+    String USE_SPRING_ANNOTATION_CONFIG = "useSpringAnnotationConfig";
+
+    void setGenerateSpringApplication(boolean useGenerateSpringApplication);
+
+    void setGenerateSpringBootApplication(boolean generateSpringBootApplication);
+
+    void setUseSpringAnnotationConfig(boolean useSpringAnnotationConfig);
+
 }

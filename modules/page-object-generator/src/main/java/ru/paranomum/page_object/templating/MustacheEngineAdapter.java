@@ -25,6 +25,7 @@ import ru.paranomum.page_object.api.TemplatingEngineAdapter;
 import ru.paranomum.page_object.api.TemplatingExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.paranomum.page_object.model.ModelCodegen;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -61,7 +62,7 @@ public class MustacheEngineAdapter implements TemplatingEngineAdapter {
      * @throws IOException an error occurred in the template processing
      */
     @Override
-    public String compileTemplate(TemplatingExecutor executor, Map<String, Object> bundle, String templateFile) throws IOException {
+    public String compileTemplate(TemplatingExecutor executor, ModelCodegen bundle, String templateFile) throws IOException {
         Template tmpl = compiler
                 .withLoader(name -> findTemplate(executor, name))
                 .defaultValue("")
@@ -71,13 +72,7 @@ public class MustacheEngineAdapter implements TemplatingEngineAdapter {
         // the value of bundle[MUSTACHE_PARENT_CONTEXT] is used a parent content in mustache.
         // See description in https://mustache.github.io/mustache.5.html#Variables
         // See DefaultCodegen.processOpts() and DefaultCodegen.useCodegenAsMustacheParentContext
-        Object parent = bundle.get(CodegenConstants.MUSTACHE_PARENT_CONTEXT);
-        if (parent == null) {
-            LOGGER.warn("{} not found. super.processOpts needs to be called in processOpts()", CodegenConstants.MUSTACHE_PARENT_CONTEXT);
-            // avoid NPE
-            parent = new Object();
-        }
-        tmpl.execute(bundle, parent, out);
+        tmpl.execute(bundle, out);
         return out.toString();
     }
 

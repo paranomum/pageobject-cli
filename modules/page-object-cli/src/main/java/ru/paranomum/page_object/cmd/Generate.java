@@ -27,6 +27,8 @@ import ru.paranomum.page_object.GeneratorNotFoundException;
 import ru.paranomum.page_object.config.CodegenConfigurator;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -51,10 +53,6 @@ public class Generate extends PageObjectGeneratorCommand {
 
     @Override
     public void execute() {
-
-//        if (isNotEmpty(generatorName)) {
-//            configurator.setGeneratorName(generatorName);
-//        }
 
         if (configurator == null) {
             if (StringUtils.isEmpty(spec)) {
@@ -97,6 +95,8 @@ public class Generate extends PageObjectGeneratorCommand {
             System.err.println(e.getMessage());
             System.err.println("[error] Check the spelling of the generator's name and try again.");
             System.exit(1);
-        }
-    }
+        } catch (URISyntaxException | IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

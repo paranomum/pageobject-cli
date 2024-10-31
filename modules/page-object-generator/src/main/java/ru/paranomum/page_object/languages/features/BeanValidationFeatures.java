@@ -15,15 +15,13 @@
  * limitations under the License.
  */
 
-package ru.paranomum.page_object;
+package ru.paranomum.page_object.languages.features;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
+public interface BeanValidationFeatures {
 
-public interface Generator {
-    Generator opts(ClientOptInput opts);
+    // Language supports generating BeanValidation-Annotations
+    String USE_BEANVALIDATION = "useBeanValidation";
 
-    List<File> generate() throws URISyntaxException, IOException;
+    void setUseBeanValidation(boolean useBeanValidation);
+
 }

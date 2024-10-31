@@ -1,0 +1,19 @@
+package {{_package}}
+
+{{#imports}}
+    import {{import}};
+{{/imports}}
+import lombok.*;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class {{classname}} {
+    //TODO продумать инициализацию методов с заполнением data класса
+
+{{#vars}}
+    private final {{#isField}}Field{{/isField}}{{#isButton}}Button{{/isButton}}{{#isLinkButton}}LinkButton{{/isLinkButton}} {{varName}} = new {{#isField}}Field{{/isField}}{{#isButton}}Button{{/isButton}}{{#isLinkButton}}LinkButton{{/isLinkButton}}({{toInit}});
+{{/vars}}
+
+    //TODO продумать data классы под филды и тп. По опыт - Field String, checkbox - true false или само выбранное значение
+}

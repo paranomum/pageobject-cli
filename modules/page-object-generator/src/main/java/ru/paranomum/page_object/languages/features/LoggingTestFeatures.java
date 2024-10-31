@@ -15,15 +15,12 @@
  * limitations under the License.
  */
 
-package ru.paranomum.page_object;
+package ru.paranomum.page_object.languages.features;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
+public interface LoggingTestFeatures {
 
-public interface Generator {
-    Generator opts(ClientOptInput opts);
+    String USE_LOGGING_FEATURE_FOR_TESTS = "useLoggingFeatureForTests";
 
-    List<File> generate() throws URISyntaxException, IOException;
+    void setUseLoggingFeatureForTests(boolean useLoggingFeatureForTests);
+
 }

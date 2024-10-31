@@ -27,6 +27,8 @@ import ru.paranomum.page_object.api.TemplateDefinition;
 import ru.paranomum.page_object.api.TemplatePathLocator;
 import ru.paranomum.page_object.api.TemplateProcessor;
 import ru.paranomum.page_object.api.TemplatingEngineAdapter;
+import ru.paranomum.page_object.model.ModelCodegen;
+import ru.paranomum.page_object.model.VarModelCodegen;
 import ru.paranomum.page_object.templating.CommonTemplateContentLocator;
 import ru.paranomum.page_object.templating.GeneratorTemplateContentLocator;
 import ru.paranomum.page_object.templating.MustacheEngineAdapter;
@@ -34,7 +36,11 @@ import ru.paranomum.page_object.templating.TemplateManagerOptions;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @SuppressWarnings("rawtypes")
@@ -101,19 +107,76 @@ public class DefaultGenerator implements Generator {
                 new TemplatePathLocator[]{generatorTemplateLocator, commonTemplateLocator}
         );
 
+
         return this;
     }
 
     @Override
-    public List<File> generate() {
+    public List<File> generate() throws URISyntaxException, IOException {
         try {
-            doc = Jsoup.parse(new File(config.getInputSpec()));
-        } catch(IOException ignore) {}
-        Elements inputs = doc.select("input");
-        for (Element l : inputs) {
-            LOGGER.info("Element - " + l + ", attribute @placeholder - " + l.attr("placeholder"));
+            File spec = new File(config.getInputSpec());
+            doc = Jsoup.parse(spec);
+        } catch(IOException e) {
+            LOGGER.info("ITS IOEXCEPTION %s", e);
         }
+        ModelCodegen model = new ModelCodegen();
+        model._package = "ru.rt.iqhr.pageobject";
+
+        Elements inputs = doc.selectXpath("(//input[contains(@data-placeholder,'') " +
+                "or contains(@placeholder, '')] | " +
+                "//textarea[contains(@data-placeholder, '') " +
+                "or contains(@placeholder, '')])");
+        if (!inputs.isEmpty()) {
+            model.imports.add("ru.rt.iqhr.pageobject.web_elements.Field");
+        }
+        int i = 0;
+        for (Element l : inputs) {
+            VarModelCodegen var = new VarModelCodegen();
+            var.isField = true;
+            var.varName = "field" + i;
+            String placeholder = l.attr("placeholder");
+            String dataPlaceholder = l.attr("data-placeholder");
+            if (!placeholder.isBlank() || !dataPlaceholder.isBlank()) {
+                if (!placeholder.isBlank()) {
+                    var.toInit = placeholder;
+                }
+                else {
+                    var.toInit = dataPlaceholder;
+                }
+            }
+            LOGGER.info("Element - " + l.tagName() +
+                    " \n attribute @placeholder - " + l.attr("placeholder") +
+                    " \n attribute @data-placeholder - " + l.attr("data-placeholder"));
+            i++;
+        }
+        generateModel(model);
         return null;
+    }
+
+    private void generateModel(ModelCodegen model) throws URISyntaxException, IOException {
+        Pattern pattern = Pattern.compile("/[a-z-]*.jar");
+        Matcher matcher = pattern.matcher(new File(DefaultGenerator.class.getProtectionDomain().getCodeSource().getLocation()
+                .toURI()).getPath());
+        String outputDir = matcher.replaceAll("");
+        File written = processTemplateToFile(model, outputDir);
+    }
+
+    private final Set<String> seenFiles = new HashSet<>();
+
+    private File processTemplateToFile(ModelCodegen templateData, String outputDir) throws IOException {
+        Path outDir = java.nio.file.Paths.get(outputDir).toAbsolutePath();
+        String adjustedOutputFilename = outDir + "/PageObjectClass.java";
+        File target = new File(adjustedOutputFilename);
+        Path absoluteTarget = target.toPath().toAbsolutePath();
+        if (!absoluteTarget.startsWith(outDir)) {
+            throw new RuntimeException(String.format(Locale.ROOT, "Target files must be generated within the output directory; absoluteTarget=%s outDir=%s", absoluteTarget, outDir));
+        }
+
+        if (seenFiles.stream().filter(f -> f.toLowerCase(Locale.ROOT).equals(absoluteTarget.toString().toLowerCase(Locale.ROOT))).findAny().isPresent()) {
+            LOGGER.warn("Duplicate file path detected. Not all operating systems can handle case sensitive file paths. path={}", absoluteTarget.toString());
+        }
+        seenFiles.add(absoluteTarget.toString());
+        return this.templateProcessor.write(templateData, "page-object-class.mustache", target);
     }
 
 }
