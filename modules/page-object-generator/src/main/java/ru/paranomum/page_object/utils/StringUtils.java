@@ -370,4 +370,34 @@ public class StringUtils {
         }
         return result.toString();
     }
+
+    public static boolean isOnlyRussian(String input) {
+        // Регулярное выражение для проверки русских букв, пробелов и знаков препинания
+        String regex = "^[А-Яа-яЁё0-9 ,.!?;:\"'()\\-\\[\\]{}]+$";
+        return input.matches(regex);
+    }
+
+    public static String findLongestString(Set<String> strings) {
+        if (strings == null || strings.isEmpty()) {
+            return null; // или можно вернуть пустую строку "" в зависимости от требований
+        }
+
+        String longestString = null; // Инициализируем переменную для самой длинной строки
+
+        for (String str : strings) {
+            if (longestString == null || str.length() > longestString.length()) {
+                longestString = str; // Обновляем самую длинную строку
+            }
+        }
+
+        return longestString;
+    }
+
+    public static boolean isPartOfUrl(String input) {
+        // Регулярное выражение для проверки, является ли строка ссылкой или ее частью
+        String regex = "^(/[^\\s?]*)?(\\?.*)?$"; // Для проверки любого пути, начинающегося с /
+        Pattern pattern = Pattern.compile(regex);
+        return pattern.matcher(input).matches();
+    }
+
 }

@@ -16,8 +16,9 @@
  */
 
 package ru.paranomum.page_object;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,8 +29,10 @@ import ru.paranomum.page_object.api.TemplateDefinition;
 import ru.paranomum.page_object.api.TemplatePathLocator;
 import ru.paranomum.page_object.api.TemplateProcessor;
 import ru.paranomum.page_object.api.TemplatingEngineAdapter;
+import ru.paranomum.page_object.model.ConfigModel;
 import ru.paranomum.page_object.model.ModelCodegen;
 import ru.paranomum.page_object.model.VarModelCodegen;
+import ru.paranomum.page_object.model.WebElementTypes;
 import ru.paranomum.page_object.templating.CommonTemplateContentLocator;
 import ru.paranomum.page_object.templating.GeneratorTemplateContentLocator;
 import ru.paranomum.page_object.templating.MustacheEngineAdapter;
@@ -43,7 +46,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ru.paranomum.page_object.utils.StringUtils.transliterate;
+import static ru.paranomum.page_object.utils.StringUtils.*;
 
 
 @SuppressWarnings("rawtypes")
@@ -123,34 +126,59 @@ public class DefaultGenerator implements Generator {
             LOGGER.info("ITS IOEXCEPTION %s", e);
         }
         ModelCodegen model = new ModelCodegen();
-        model._package = "ru.rt.iqhr.pageobject";
+        ConfigModel configModel = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                false).readValue(new File(config.getConfigFile()), ConfigModel.class);
+        model._package = configModel.packageName;
 
-        Elements inputs = doc.selectXpath("(//input[contains(@data-placeholder,'') " +
-                "or contains(@placeholder, '')] | " +
-                "//textarea[contains(@data-placeholder, '') " +
-                "or contains(@placeholder, '')])");
-        if (!inputs.isEmpty()) {
-            model.setImport(Map.of("import", "ru.rt.iqhr.pageobject.web_elements.Field"));
-        }
-        for (Element l : inputs) {
-            VarModelCodegen var = new VarModelCodegen();
-            var.isField = true;
-            String placeholder = l.attr("placeholder");
-            String dataPlaceholder = l.attr("data-placeholder");
-            if (!placeholder.isBlank() || !dataPlaceholder.isBlank()) {
-                if (!placeholder.isBlank()) {
-                    var.toInit = placeholder;
-                    var.varName = transliterate(placeholder);
-                }
-                else {
-                    var.toInit = dataPlaceholder;
-                    var.varName = transliterate(dataPlaceholder);
+        for (WebElementTypes type : configModel.getConfiguration()) {
+            Elements elements = doc.selectXpath(type.xpath);
+            if (!elements.isEmpty()) {
+                model.setImport(Map.of("import", type.toImport));
+                for (Element el : elements) {
+                    Set<String> initData = new HashSet<>();
+                    VarModelCodegen var = new VarModelCodegen();
+                    var.type = type.type;
+                    if (!type.attributeToInit.isEmpty()) {
+                        for (String attr : type.attributeToInit) {
+                            String attrEl = el.attr(attr);
+                            if (type.type.equals("LinkButton"))
+                                LOGGER.info("attr - {}, attrStr - {}", attr, attrEl);
+                            if (isOnlyRussian(attrEl))
+                                initData.add(attrEl);
+                        }
+                    }
+                    if (!type.innerXpathToInit.isEmpty()) {
+                        for (String inner : type.innerXpathToInit) {
+                            String attr = null;
+                            if (!inner.contains("@")) {
+                                Elements els = el.selectXpath(inner);
+                                if (els.size() > 1) {
+                                    for (Element toAttr : els) {
+                                        if (isOnlyRussian(toAttr.text()))
+                                            initData.add(toAttr.text());
+                                    }
+                                    continue;
+                                }
+                                else {
+                                    attr = els.text();
+                                }
+                            }
+                            else {
+                                attr = el.selectXpath(inner.substring(0,inner.indexOf('@') - 1))
+                                        .attr(inner.substring(inner.indexOf('@') + 1));
+                            }
+                            if (isOnlyRussian(attr))
+                                initData.add(attr);
+                        }
+                    }
+                    if (!initData.isEmpty()) {
+                        var.toInit = findLongestString(initData);
+                        var.varName = transliterate(var.toInit);
+                        model.vars.add(var);
+                        el.remove();
+                    }
                 }
             }
-            LOGGER.info("Element - " + l.tagName() +
-                    " \n attribute @placeholder - " + l.attr("placeholder") +
-                    " \n attribute @data-placeholder - " + l.attr("data-placeholder"));
-            model.vars.add(var);
         }
         generateModel(model);
         return null;

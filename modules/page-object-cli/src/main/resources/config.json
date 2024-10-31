@@ -1,0 +1,57 @@
+{
+  "packageName": "ru.rt.iqhr.pageobject",
+  "outputDir": "/Users/admin/Desktop/pageobject-generator/modules/page-object-cli/target",
+  "configuration": [
+    {
+      "type": "OptionField",
+      "xpath": "//mat-form-field[.//input[(contains(@ng-reflect-placeholder,'') or contains(@placeholder, '') or contains(@data-placeholder, '')) and @role='combobox']]",
+      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.OptionField",
+      "attributeToInit": [],
+      "innerXpathToInit": [
+        ".//input/@ng-reflect-placeholder", ".//input/@placeholder", ".//input/@data-placeholder", ".//mat-label"
+      ]
+    },
+    {
+      "type": "CheckBox",
+      "xpath": "//mat-checkbox[contains(.//span, '') or contains(text(), '') or .//span[@class='mat-checkbox-label' and contains(text(), '')]]",
+      "toImport": "ru.rt.iqhr.pageobject.web_elements.buttons.LinkButton",
+      "attributeToInit": [
+        "href", "ng-reflect-message"
+      ],
+      "innerXpathToInit": [
+        ".//h3", ".//span"
+      ]
+    },
+    {
+      "type": "Field",
+      "xpath": "(//input[contains(@data-placeholder,'') or contains(@placeholder, '')] | //textarea[contains(@data-placeholder, '') or contains(@placeholder, '')])",
+      "toImport": "ru.rt.iqhr.pageobject.web_elements.Field",
+      "attributeToInit": [
+        "placeholder", "data-placeholder"
+      ],
+      "innerXpathToInit": []
+    },
+    {
+      "type": "Button",
+      "xpath": "//button[contains(.//span, '') or contains(@ng-reflect-message, '') or contains(.//@aria-label, '') or contains(., '')]",
+      "toImport": "ru.rt.iqhr.pageobject.web_elements.buttons.Button",
+      "attributeToInit": [
+        "ng-reflect-message"
+      ],
+      "innerXpathToInit": [
+        ".//*/@aria-label", ".//span"
+      ]
+    },
+    {
+      "type": "LinkButton",
+      "xpath": "//a[contains(@ng-reflect-message, '') or contains(.//span, '') or contains(@href, '') or contains(text(), '') or .//h3[contains(text(), '')]]",
+      "toImport": "ru.rt.iqhr.pageobject.web_elements.buttons.LinkButton",
+      "attributeToInit": [
+        "href", "ng-reflect-message"
+      ],
+      "innerXpathToInit": [
+        ".//h3", ".//span"
+      ]
+    }
+  ]
+}

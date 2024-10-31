@@ -68,6 +68,7 @@ public class DefaultCodegen implements CodegenConfig {
 
     protected GeneratorMetadata generatorMetadata;
     protected String inputSpec;
+    protected String configFile;
     protected String outputFolder = "";
     protected Set<String> defaultIncludes;
     protected Map<String, String> typeMapping;
@@ -733,6 +734,11 @@ public class DefaultCodegen implements CodegenConfig {
     }
 
     @Override
+    public void setConfigFile(String configFile) {
+        this.configFile = configFile;
+    }
+
+    @Override
     public String getOutputDir() {
         return outputFolder();
     }
@@ -740,6 +746,11 @@ public class DefaultCodegen implements CodegenConfig {
     @Override
     public String getInputSpec() {
         return inputSpec;
+    }
+
+    @Override
+    public String getConfigFile() {
+        return configFile;
     }
 
     @Override

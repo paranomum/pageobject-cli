@@ -51,6 +51,10 @@ public class Generate extends PageObjectGeneratorCommand {
             description = "where to write the generated files (current dir by default)")
     private String spec = "";
 
+    @Option(name = {"-c", "--config"}, title = "config json file",
+            description = "file with configuration of web elements")
+    private String conf = "";
+
     @Override
     public void execute() {
 
@@ -79,6 +83,15 @@ public class Generate extends PageObjectGeneratorCommand {
                 System.exit(1);
             }
             configurator.setInputSpec(spec);
+        }
+
+        if (isNotEmpty(conf)) {
+            if (!new File(conf).exists()) {
+                System.err.println("[error] The config file is not found: " + conf);
+                System.err.println("[error] Check the path of the config and try again.");
+                System.exit(1);
+            }
+            configurator.setConfigFile(conf);
         }
 
         try {

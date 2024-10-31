@@ -50,6 +50,7 @@ public class WorkflowSettings {
     public static final Map<String, String> DEFAULT_GLOBAL_PROPERTIES = Collections.unmodifiableMap(new HashMap<>());
 
     private String inputSpec;
+    private String configFile;
     private String outputDir = DEFAULT_OUTPUT_DIR;
     private boolean verbose = DEFAULT_VERBOSE;
     private boolean skipOverwrite = DEFAULT_SKIP_OVERWRITE;
@@ -68,6 +69,7 @@ public class WorkflowSettings {
 
     private WorkflowSettings(Builder builder) {
         this.inputSpec = builder.inputSpec;
+        this.configFile = builder.configFile;
         this.outputDir = builder.outputDir;
         this.verbose = builder.verbose;
         this.skipOverwrite = builder.skipOverwrite;
@@ -100,6 +102,7 @@ public class WorkflowSettings {
     public static Builder newBuilder(WorkflowSettings copy) {
         Builder builder = newBuilder();
         builder.inputSpec = copy.getInputSpec();
+        builder.configFile = copy.getConfigFile();
         builder.outputDir = copy.getOutputDir();
         builder.verbose = copy.isVerbose();
         builder.skipOverwrite = copy.isSkipOverwrite();
@@ -130,6 +133,15 @@ public class WorkflowSettings {
      */
     public String getInputSpec() {
         return inputSpec;
+    }
+
+    /**
+     * Gets input spec's location, as URL or file
+     *
+     * @return the input spec
+     */
+    public String getConfigFile() {
+        return configFile;
     }
 
     /**
@@ -298,6 +310,7 @@ public class WorkflowSettings {
     @SuppressWarnings("unused")
     public static final class Builder {
         private String inputSpec;
+        private String configFile;
         private String outputDir = DEFAULT_OUTPUT_DIR;
         private Boolean verbose = DEFAULT_VERBOSE;
         private Boolean skipOverwrite = DEFAULT_SKIP_OVERWRITE;
@@ -329,6 +342,13 @@ public class WorkflowSettings {
         public Builder withInputSpec(String inputSpec) {
             if (inputSpec != null) {
                 this.inputSpec = inputSpec;
+            }
+            return this;
+        }
+
+        public Builder withConfigFile(String configFile) {
+            if (configFile != null) {
+                this.configFile = configFile;
             }
             return this;
         }

@@ -107,11 +107,15 @@ public interface CodegenConfig {
 
     String getInputSpec();
 
+    String getConfigFile();
+
     void setInputSpec(String inputSpec);
 
     String getOutputDir();
 
     void setOutputDir(String dir);
+
+    void setConfigFile(String configFile);
 
     Set<String> defaultIncludes();
 

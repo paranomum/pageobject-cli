@@ -13,7 +13,7 @@ public class {{classname}} {
     //TODO продумать инициализацию методов с заполнением data класса
 
 {{#vars}}
-    private final {{#isField}}Field{{/isField}}{{#isButton}}Button{{/isButton}}{{#isLinkButton}}LinkButton{{/isLinkButton}} {{varName}} = new {{#isField}}Field{{/isField}}{{#isButton}}Button{{/isButton}}{{#isLinkButton}}LinkButton{{/isLinkButton}}("{{toInit}}");
+    private final {{type}} {{varName}}{{type}} = new {{type}}("{{toInit}}");
 {{/vars}}
 
     //TODO продумать data классы под филды и тп. По опыт - Field String, checkbox - true false или само выбранное значение

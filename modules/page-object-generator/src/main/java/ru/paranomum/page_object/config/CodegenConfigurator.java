@@ -45,6 +45,7 @@ public class CodegenConfigurator {
 
     private String generatorName;
     private String inputSpec;
+    private String configFile;
     private String templatingEngineName;
 
     private List<TemplateDefinition> userDefinedTemplates = new ArrayList<>();
@@ -77,6 +78,12 @@ public class CodegenConfigurator {
     public CodegenConfigurator setInputSpec(String inputSpec) {
         this.inputSpec = inputSpec;
         workflowSettingsBuilder.withInputSpec(inputSpec);
+        return this;
+    }
+
+    public CodegenConfigurator setConfigFile(String configFile) {
+        this.configFile = configFile;
+        workflowSettingsBuilder.withConfigFile(configFile);
         return this;
     }
 
@@ -122,6 +129,7 @@ public class CodegenConfigurator {
         // TODO: Work toward CodegenConfig having a "WorkflowSettings" property, or better a "Workflow" object which itself has a "WorkflowSettings" property.
         config.setInputSpec(workflowSettings.getInputSpec());
         config.setOutputDir(workflowSettings.getOutputDir());
+        config.setConfigFile(workflowSettings.getConfigFile());
 
         TemplatingEngineAdapter templatingEngine = TemplatingEngineLoader.byIdentifier(workflowSettings.getTemplatingEngineName());
         config.setTemplatingEngine(templatingEngine);
