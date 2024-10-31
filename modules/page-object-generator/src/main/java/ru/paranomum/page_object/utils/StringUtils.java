@@ -7,11 +7,13 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import ru.paranomum.page_object.config.GlobalSettings;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.Map.entry;
 import static ru.paranomum.page_object.utils.CamelizeOption.UPPERCASE_FIRST_CHAR;
 
 public class StringUtils {
@@ -23,6 +25,77 @@ public class StringUtils {
      * Set the cache expiry (in seconds) of the sanitizedNameCache, camelizedWordsCache and underscoreWordsCache.
      */
     public static final String NAME_CACHE_EXPIRY_PROPERTY = "ru.paranomum.page_object.utils.namecache.expireafter.seconds";
+
+    private static final Map<Character, String> translitMap = Map.ofEntries(
+            Map.entry('а', "a"),
+            Map.entry('б', "b"),
+            Map.entry('в', "v"),
+            Map.entry('г', "g"),
+            Map.entry('д', "d"),
+            Map.entry('е', "e"),
+            Map.entry('ё', "yo"),
+            Map.entry('ж', "zh"),
+            Map.entry('з', "z"),
+            Map.entry('и', "i"),
+            Map.entry('й', "y"),
+            Map.entry('к', "k"),
+            Map.entry('л', "l"),
+            Map.entry('м', "m"),
+            Map.entry('н', "n"),
+            Map.entry('о', "o"),
+            Map.entry('п', "p"),
+            Map.entry('р', "r"),
+            Map.entry('с', "s"),
+            Map.entry('т', "t"),
+            Map.entry('у', "u"),
+            Map.entry('ф', "f"),
+            Map.entry('х', "kh"),
+            Map.entry('ц', "ts"),
+            Map.entry('ч', "ch"),
+            Map.entry('ш', "sh"),
+            Map.entry('щ', "shch"),
+            Map.entry('ъ', ""),
+            Map.entry('ы', "y"),
+            Map.entry('ь', ""),
+            Map.entry('э', "e"),
+            Map.entry('ю', "yu"),
+            Map.entry('я', "ya"),
+
+            // Для заглавных букв
+            Map.entry('А', "A"),
+            Map.entry('Б', "B"),
+            Map.entry('В', "V"),
+            Map.entry('Г', "G"),
+            Map.entry('Д', "D"),
+            Map.entry('Е', "E"),
+            Map.entry('Ё', "Yo"),
+            Map.entry('Ж', "Zh"),
+            Map.entry('З', "Z"),
+            Map.entry('И', "I"),
+            Map.entry('Й', "Y"),
+            Map.entry('К', "K"),
+            Map.entry('Л', "L"),
+            Map.entry('М', "M"),
+            Map.entry('Н', "N"),
+            Map.entry('О', "O"),
+            Map.entry('П', "P"),
+            Map.entry('Р', "R"),
+            Map.entry('С', "S"),
+            Map.entry('Т', "T"),
+            Map.entry('У', "U"),
+            Map.entry('Ф', "F"),
+            Map.entry('Х', "Kh"),
+            Map.entry('Ц', "Ts"),
+            Map.entry('Ч', "Ch"),
+            Map.entry('Ш', "Sh"),
+            Map.entry('Щ', "Shch"),
+            Map.entry('Ъ', ""),
+            Map.entry('Ы', "Y"),
+            Map.entry('Ь', ""),
+            Map.entry('Э', "E"),
+            Map.entry('Ю', "Yu"),
+            Map.entry('Я', "Ya")
+    );
 
     // A cache of camelized words. The camelize() method is invoked many times with the same
     // arguments, this cache is used to optimized performance.
@@ -277,5 +350,24 @@ public class StringUtils {
             if (result != null) return result;
             throw new RuntimeException("Word '" + name + "' could not be escaped.");
         });
+    }
+
+    public static String transliterate(String input) {
+        StringBuilder result = new StringBuilder();
+        boolean wasSpace = true;
+
+        for (char ch : input.toCharArray()) {
+            String translitChar = translitMap.get(ch);
+            if (translitChar != null) {
+                if (wasSpace) {
+                    translitChar = translitChar.substring(0, 1).toUpperCase() + translitChar.substring(1);
+                    wasSpace = false; // Устанавливаем флаг в false, так как текущий символ - не пробел
+                }
+                result.append(translitChar);
+            } else {
+                wasSpace = (ch == ' '); // Устанавливаем флаг в зависимости от того, пробел ли текущий символ
+            }
+        }
+        return result.toString();
     }
 }

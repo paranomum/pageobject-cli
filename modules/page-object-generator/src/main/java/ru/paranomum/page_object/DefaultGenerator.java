@@ -17,6 +17,7 @@
 
 package ru.paranomum.page_object;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -41,6 +42,8 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static ru.paranomum.page_object.utils.StringUtils.transliterate;
 
 
 @SuppressWarnings("rawtypes")
@@ -127,27 +130,27 @@ public class DefaultGenerator implements Generator {
                 "//textarea[contains(@data-placeholder, '') " +
                 "or contains(@placeholder, '')])");
         if (!inputs.isEmpty()) {
-            model.imports.add("ru.rt.iqhr.pageobject.web_elements.Field");
+            model.setImport(Map.of("import", "ru.rt.iqhr.pageobject.web_elements.Field"));
         }
-        int i = 0;
         for (Element l : inputs) {
             VarModelCodegen var = new VarModelCodegen();
             var.isField = true;
-            var.varName = "field" + i;
             String placeholder = l.attr("placeholder");
             String dataPlaceholder = l.attr("data-placeholder");
             if (!placeholder.isBlank() || !dataPlaceholder.isBlank()) {
                 if (!placeholder.isBlank()) {
                     var.toInit = placeholder;
+                    var.varName = transliterate(placeholder);
                 }
                 else {
                     var.toInit = dataPlaceholder;
+                    var.varName = transliterate(dataPlaceholder);
                 }
             }
             LOGGER.info("Element - " + l.tagName() +
                     " \n attribute @placeholder - " + l.attr("placeholder") +
                     " \n attribute @data-placeholder - " + l.attr("data-placeholder"));
-            i++;
+            model.vars.add(var);
         }
         generateModel(model);
         return null;
@@ -178,5 +181,4 @@ public class DefaultGenerator implements Generator {
         seenFiles.add(absoluteTarget.toString());
         return this.templateProcessor.write(templateData, "page-object-class.mustache", target);
     }
-
 }
