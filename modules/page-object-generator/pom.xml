@@ -28,49 +28,151 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>${maven-jar-plugin.version}</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>ru.paranomum.page_object.PageObjectGenerator</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <id>process-resources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <minimizeJar>false</minimizeJar>
-                            <createDependencyReducedPom>true</createDependencyReducedPom>
-                            <dependencyReducedPomLocation>
-                                ${java.io.tmpdir}/dependency-reduced-pom.xml
-                            </dependencyReducedPomLocation>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                            </transformers>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
+                <version>3.3.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                        <version>33.3.0-jre</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>commons-io</groupId>
+                        <artifactId>commons-io</artifactId>
+                        <version>2.15.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven</groupId>
+                        <artifactId>maven-plugin-api</artifactId>
+                        <version>3.1.0</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.codehaus.plexus</groupId>
+                                <artifactId>plexus-utils</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-utils</artifactId>
+                        <version>4.0.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven</groupId>
+                        <artifactId>maven-archiver</artifactId>
+                        <version>3.6.1</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.codehaus.plexus</groupId>
+                                <artifactId>plexus-archiver</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-archiver</artifactId>
+                        <version>4.8.0</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.apache.commons</groupId>
+                                <artifactId>commons-compress</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>org.iq80.snappy</groupId>
+                                <artifactId>snappy</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.xerial.snappy</groupId>
+                        <artifactId>snappy-java</artifactId>
+                        <version>1.1.10.4</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-compress</artifactId>
+                        <version>1.26.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven</groupId>
+                        <artifactId>maven-core</artifactId>
+                        <version>3.9.8</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>commons-io</groupId>
+                                <artifactId>commons-io</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>com.google.guava</groupId>
+                                <artifactId>guava</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>org.codehaus.plexus</groupId>
+                                <artifactId>plexus-utils</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven</groupId>
+                        <artifactId>maven-compat</artifactId>
+                        <version>3.8.1</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.apache.maven</groupId>
+                                <artifactId>maven-core</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>commons-io</groupId>
+                                <artifactId>commons-io</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                        <version>33.3.0-jre</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven</groupId>
+                        <artifactId>maven-artifact</artifactId>
+                        <version>3.1.0</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.codehaus.plexus</groupId>
+                                <artifactId>plexus-utils</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.shared</groupId>
+                        <artifactId>file-management</artifactId>
+                        <version>3.0.0</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.apache.maven</groupId>
+                                <artifactId>maven-compat</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>org.codehaus.plexus</groupId>
+                                <artifactId>plexus-utils</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>commons-io</groupId>
+                                <artifactId>commons-io</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.shared</groupId>
+                        <artifactId>maven-shared-utils</artifactId>
+                        <version>3.3.4</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>commons-io</groupId>
+                                <artifactId>commons-io</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -134,6 +236,17 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-guava</artifactId>
             <version>${jackson.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.3.0-jre</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -159,6 +272,17 @@
             <groupId>com.github.jknack</groupId>
             <artifactId>handlebars-jackson2</artifactId>
             <version>${handlebars-java.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.15.4</version>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -171,5 +295,6 @@
             <version>3.17.0</version>
         </dependency>
     </dependencies>
+
 
 </project>
