@@ -12,9 +12,66 @@
       ]
     },
     {
+      "type": "ListBox",
+      "xpath": "//mat-chip-list[.//input[contains(@placeholder, '') and aria-haspopup='listbox']]",
+      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.ListBox",
+      "attributeToInit": [],
+      "innerXpathToInit": [
+        ".//input/@ng-reflect-placeholder", ".//input/@placeholder", ".//input/@data-placeholder", ".//mat-label"
+      ]
+    },
+    {
+      "type": "MatRadioGroup",
+      "xpath": "//div[label[contains(text(), '')]]/mat-radio-group",
+      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.MatRadioGroup",
+      "attributeToInit": [],
+      "innerXpathToInit": [
+        ".//input/@ng-reflect-placeholder", ".//input/@placeholder", ".//input/@data-placeholder", ".//mat-label", "./label"
+      ]
+    },
+    {
+      "type": "MatSelect",
+      "xpath": "(//mat-select[contains(@ng-reflect-placeholder, '') or contains(@placeholder, '')] | //div[mat-select and .//mat-label[contains(text(), '')]]/mat-select)",
+      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.MatSelect",
+      "attributeToInit": [
+        "ng-reflect-placeholder",
+        "placeholder"
+      ],
+      "innerXpathToInit": [
+        ".//mat-label", ".//label"
+      ]
+    },
+    {
+      "type": "MatRadioButton",
+      "xpath": "//mat-radio-button[contains(.//span, '') or contains(text(), '') or .//span[@class='mat-radio-label-content' and contains(text(), '')]]",
+      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.MatRadioButton",
+      "attributeToInit": [],
+      "innerXpathToInit": [
+        ".", ".//span[@class='mat-radio-label-content']", ".//span"
+      ]
+    },
+    {
+      "type": "SlideToggle",
+      "xpath": "//mat-slide-toggle[.//*[contains(text(), '')] or contains(text(), '')]",
+      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.SlideToggle",
+      "attributeToInit": [],
+      "innerXpathToInit": [
+        ".//*", "."
+      ]
+    },
+    {
+      "type": "TabButton",
+      "xpath": "//div[@role='tab' and contains(.//*, '')]",
+      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.TabButton",
+      "attributeToInit": [],
+      "innerXpathToInit": [
+        ".//*"
+      ]
+    },
+    {
       "type": "CheckBox",
       "xpath": "//mat-checkbox[contains(.//span, '') or contains(text(), '') or .//span[@class='mat-checkbox-label' and contains(text(), '')]]",
-      "toImport": "ru.rt.iqhr.pageobject.web_elements.buttons.LinkButton",
+      "toImport": "ru.rt.iqhr.pageobject.web_elements.buttons.CheckBox",
       "attributeToInit": [
         "href", "ng-reflect-message"
       ],

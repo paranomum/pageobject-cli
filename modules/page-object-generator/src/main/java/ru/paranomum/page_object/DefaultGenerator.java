@@ -150,6 +150,12 @@ public class DefaultGenerator implements Generator {
                     if (!type.innerXpathToInit.isEmpty()) {
                         for (String inner : type.innerXpathToInit) {
                             String attr = null;
+                            if (inner.equals(".")) {
+                                attr = el.text();
+                                if (isOnlyRussian(attr))
+                                    initData.add(attr);
+                                continue;
+                            }
                             if (!inner.contains("@")) {
                                 Elements els = el.selectXpath(inner);
                                 if (els.size() > 1) {
