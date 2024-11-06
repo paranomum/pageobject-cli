@@ -40,8 +40,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static ru.paranomum.page_object.utils.StringUtils.*;
 
@@ -157,6 +159,7 @@ public class DefaultGenerator implements Generator {
         model.className = file.className;
 
         for (WebElementTypes type : configModel.getConfiguration()) {
+            List<VarModelCodegen> vars = new ArrayList<>();
 			assert doc != null;
 			Elements elements = doc.selectXpath(type.xpath);
             if (!elements.isEmpty()) {
@@ -205,11 +208,17 @@ public class DefaultGenerator implements Generator {
                     if (!initData.isEmpty()) {
                         var.toInit = findLongestString(initData);
                         var.varName = transliterate(var.toInit);
-                        model.vars.add(var);
+                        if (vars.stream().anyMatch(e -> e.varName.equals(var.getVarName()))) {
+                            var.needIndex = true;
+                            var.index = vars.stream()
+                                    .filter(e -> e.varName.equals(var.getVarName())).count() + 1;
+                        }
+                        vars.add(var);
                         el.remove();
                     }
                 }
             }
+            model.vars.addAll(vars);
         }
         return model;
     }

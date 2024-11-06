@@ -13,7 +13,7 @@ public class {{className}} {
     //TODO продумать инициализацию методов с заполнением data класса
 
 {{#vars}}
-    private final {{type}} {{varName}}{{type}} = new {{type}}("{{toInit}}");
+    private final {{type}} {{varName}}{{type}} = new {{type}}("{{toInit}}"{{#needIndex}}, {{index}}{{/needIndex}});
 {{/vars}}
 
     //TODO продумать data классы под филды и тп. По опыт - Field String, checkbox - true false или само выбранное значение
