@@ -1,0 +1,14 @@
+{
+  "files" : [
+    {
+      "packageName" : "ru.rt.iqhr.pageobject.pages",
+      "className": "AuthorizationPage",
+      "pathToHtml": "/Users/admin/Desktop/pageobject-generator/modules/page-object-cli/src/main/resources/site.html"
+    },
+    {
+      "packageName" : "ru.rt.iqhr.pageobject.pages",
+      "className": "CandidatePage",
+      "pathToHtml": "/Users/admin/Desktop/pageobject-generator/modules/page-object-cli/src/main/resources/site.html"
+    }
+  ]
+}

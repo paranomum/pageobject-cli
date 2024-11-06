@@ -12,7 +12,7 @@ public class GeneratorTest {
 	public void setupAndRunTest() {
 		final String[] commonArgs =
 				{"generate",
-						"-i", "/Users/admin/Desktop/pageobject-generator/modules/page-object-cli/src/main/resources/site.html",
+						"-i", "/Users/admin/Desktop/pageobject-generator/modules/page-object-cli/src/main/resources/files.json",
 						"-c", "/Users/admin/Desktop/pageobject-generator/modules/page-object-cli/src/main/resources/config.json"};
 
 		Cli.CliBuilder<Runnable> builder =

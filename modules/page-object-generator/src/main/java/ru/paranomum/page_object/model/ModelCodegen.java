@@ -8,7 +8,8 @@ import java.util.*;
 @Getter
 @Setter
 public class ModelCodegen {
-	public String _package;
+	public String packageName;
+	public String className;
 	public List<Map<String, String>> imports = new ArrayList<>();
 	public List<VarModelCodegen> vars = new ArrayList<>();
 

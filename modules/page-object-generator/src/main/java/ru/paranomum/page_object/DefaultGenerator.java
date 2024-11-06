@@ -29,10 +29,7 @@ import ru.paranomum.page_object.api.TemplateDefinition;
 import ru.paranomum.page_object.api.TemplatePathLocator;
 import ru.paranomum.page_object.api.TemplateProcessor;
 import ru.paranomum.page_object.api.TemplatingEngineAdapter;
-import ru.paranomum.page_object.model.ConfigModel;
-import ru.paranomum.page_object.model.ModelCodegen;
-import ru.paranomum.page_object.model.VarModelCodegen;
-import ru.paranomum.page_object.model.WebElementTypes;
+import ru.paranomum.page_object.model.*;
 import ru.paranomum.page_object.templating.CommonTemplateContentLocator;
 import ru.paranomum.page_object.templating.GeneratorTemplateContentLocator;
 import ru.paranomum.page_object.templating.MustacheEngineAdapter;
@@ -63,7 +60,9 @@ public class DefaultGenerator implements Generator {
     private String contextPath;
     private Map<String, String> generatorPropertyDefaults = new HashMap<>();
 
-    private Document doc = null;
+    private InputSpecModel files = null;
+    private List<ModelCodegen> modelsToGenerate = new ArrayList<>();
+    private ConfigModel configModel;
     /**
      *  Retrieves an instance to the configured template processor, available after user-defined options are
      *  applied via 
@@ -121,17 +120,45 @@ public class DefaultGenerator implements Generator {
     public List<File> generate() throws URISyntaxException, IOException {
         try {
             File spec = new File(config.getInputSpec());
+            files = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                    false).readValue(spec, InputSpecModel.class);
+        } catch(IOException e) {
+            LOGGER.info("ITS IOEXCEPTION %s", e);
+        }
+        configModel = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                false).readValue(new File(config.getConfigFile()), ConfigModel.class);
+
+        for (InputSpecModel.HtmlFiles file : files.files) {
+            modelsToGenerate.add(parseHtmlToModel(file));
+        }
+
+        generateModels(modelsToGenerate);
+        return null;
+    }
+
+    private void generateModels(List<ModelCodegen> model) throws URISyntaxException, IOException {
+        Pattern pattern = Pattern.compile("/[a-z-]*.jar");
+        Matcher matcher = pattern.matcher(new File(DefaultGenerator.class.getProtectionDomain().getCodeSource().getLocation()
+                .toURI()).getPath());
+        String outputDir = matcher.replaceAll("");
+        processTemplateToFile(model, outputDir + "/generated_files");
+    }
+
+    private ModelCodegen parseHtmlToModel(InputSpecModel.HtmlFiles file) throws IOException {
+        Document doc = null;
+        try {
+            File spec = new File(file.pathToHtml);
             doc = Jsoup.parse(spec);
         } catch(IOException e) {
             LOGGER.info("ITS IOEXCEPTION %s", e);
         }
         ModelCodegen model = new ModelCodegen();
-        ConfigModel configModel = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                false).readValue(new File(config.getConfigFile()), ConfigModel.class);
-        model._package = configModel.packageName;
+        model.packageName = file.packageName;
+        model.className = file.className;
 
         for (WebElementTypes type : configModel.getConfiguration()) {
-            Elements elements = doc.selectXpath(type.xpath);
+			assert doc != null;
+			Elements elements = doc.selectXpath(type.xpath);
             if (!elements.isEmpty()) {
                 model.setImport(Map.of("import", type.toImport));
                 for (Element el : elements) {
@@ -141,8 +168,6 @@ public class DefaultGenerator implements Generator {
                     if (!type.attributeToInit.isEmpty()) {
                         for (String attr : type.attributeToInit) {
                             String attrEl = el.attr(attr);
-                            if (type.type.equals("LinkButton"))
-                                LOGGER.info("attr - {}, attrStr - {}", attr, attrEl);
                             if (isOnlyRussian(attrEl))
                                 initData.add(attrEl);
                         }
@@ -186,33 +211,27 @@ public class DefaultGenerator implements Generator {
                 }
             }
         }
-        generateModel(model);
-        return null;
-    }
-
-    private void generateModel(ModelCodegen model) throws URISyntaxException, IOException {
-        Pattern pattern = Pattern.compile("/[a-z-]*.jar");
-        Matcher matcher = pattern.matcher(new File(DefaultGenerator.class.getProtectionDomain().getCodeSource().getLocation()
-                .toURI()).getPath());
-        String outputDir = matcher.replaceAll("");
-        File written = processTemplateToFile(model, outputDir);
+        return model;
     }
 
     private final Set<String> seenFiles = new HashSet<>();
 
-    private File processTemplateToFile(ModelCodegen templateData, String outputDir) throws IOException {
-        Path outDir = java.nio.file.Paths.get(outputDir).toAbsolutePath();
-        String adjustedOutputFilename = outDir + "/PageObjectClass.java";
-        File target = new File(adjustedOutputFilename);
-        Path absoluteTarget = target.toPath().toAbsolutePath();
-        if (!absoluteTarget.startsWith(outDir)) {
-            throw new RuntimeException(String.format(Locale.ROOT, "Target files must be generated within the output directory; absoluteTarget=%s outDir=%s", absoluteTarget, outDir));
-        }
+    private void processTemplateToFile(List<ModelCodegen> models, String outputDir) throws IOException {
+        for (ModelCodegen templateData : models) {
+            LOGGER.info("Generating class with name {}", templateData.className);
+            Path outDir = java.nio.file.Paths.get(outputDir).toAbsolutePath();
+            String adjustedOutputFilename = outDir + "/" + templateData.className + ".java";
+            File target = new File(adjustedOutputFilename);
+            Path absoluteTarget = target.toPath().toAbsolutePath();
+            if (!absoluteTarget.startsWith(outDir)) {
+                throw new RuntimeException(String.format(Locale.ROOT, "Target files must be generated within the output directory; absoluteTarget=%s outDir=%s", absoluteTarget, outDir));
+            }
 
-        if (seenFiles.stream().filter(f -> f.toLowerCase(Locale.ROOT).equals(absoluteTarget.toString().toLowerCase(Locale.ROOT))).findAny().isPresent()) {
-            LOGGER.warn("Duplicate file path detected. Not all operating systems can handle case sensitive file paths. path={}", absoluteTarget.toString());
+            if (seenFiles.stream().filter(f -> f.toLowerCase(Locale.ROOT).equals(absoluteTarget.toString().toLowerCase(Locale.ROOT))).findAny().isPresent()) {
+                LOGGER.warn("Duplicate file path detected. Not all operating systems can handle case sensitive file paths. path={}", absoluteTarget.toString());
+            }
+            seenFiles.add(absoluteTarget.toString());
+            this.templateProcessor.write(templateData, "page-object-class.mustache", target);
         }
-        seenFiles.add(absoluteTarget.toString());
-        return this.templateProcessor.write(templateData, "page-object-class.mustache", target);
     }
 }
