@@ -227,8 +227,8 @@ public class DefaultGenerator implements Generator {
 
     private final Set<String> seenFiles = new HashSet<>();
 
-    private void processTemplateToFile(List<ModelCodegen> models, String outputDir) throws IOException {
-        for (ModelCodegen templateData : models) {
+    private void processTemplateToFile(List<ModelCodegen> models, String outputDir){
+        models.stream().parallel().forEach(templateData -> {
             LOGGER.info("Generating class with name {}", templateData.className);
             Path outDir = java.nio.file.Paths.get(outputDir).toAbsolutePath();
             String adjustedOutputFilename = outDir + "/" + templateData.className + ".java";
@@ -242,7 +242,9 @@ public class DefaultGenerator implements Generator {
                 LOGGER.warn("Duplicate file path detected. Not all operating systems can handle case sensitive file paths. path={}", absoluteTarget.toString());
             }
             seenFiles.add(absoluteTarget.toString());
-            this.templateProcessor.write(templateData, "page-object-class.mustache", target);
-        }
+            try {
+                this.templateProcessor.write(templateData, "page-object-class.mustache", target);
+            } catch (IOException ignore) {}
+        });
     }
 }
