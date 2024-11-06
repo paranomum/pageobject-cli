@@ -158,67 +158,69 @@ public class DefaultGenerator implements Generator {
         model.packageName = file.packageName;
         model.className = file.className;
 
-        for (WebElementTypes type : configModel.getConfiguration()) {
-            List<VarModelCodegen> vars = new ArrayList<>();
-			assert doc != null;
-			Elements elements = doc.selectXpath(type.xpath);
-            if (!elements.isEmpty()) {
-                model.setImport(Map.of("import", type.toImport));
-                for (Element el : elements) {
-                    Set<String> initData = new HashSet<>();
-                    VarModelCodegen var = new VarModelCodegen();
-                    var.type = type.type;
-                    if (!type.attributeToInit.isEmpty()) {
-                        for (String attr : type.attributeToInit) {
-                            String attrEl = el.attr(attr);
-                            if (isOnlyRussian(attrEl))
-                                initData.add(attrEl);
-                        }
-                    }
-                    if (!type.innerXpathToInit.isEmpty()) {
-                        for (String inner : type.innerXpathToInit) {
-                            String attr = null;
-                            if (inner.equals(".")) {
-                                attr = el.text();
-                                if (isOnlyRussian(attr))
-                                    initData.add(attr);
-                                continue;
+        if (doc != null) {
+            Document finalDoc = doc;
+            configModel.getConfiguration().stream().parallel().forEach(type -> {
+                List<VarModelCodegen> vars = new ArrayList<>();
+                Elements elements = finalDoc.selectXpath(type.xpath);
+                if (!elements.isEmpty()) {
+                    model.setImport(Map.of("import", type.toImport));
+                    for (Element el : elements) {
+                        Set<String> initData = new HashSet<>();
+                        VarModelCodegen var = new VarModelCodegen();
+                        var.type = type.type;
+                        if (!type.attributeToInit.isEmpty()) {
+                            for (String attr : type.attributeToInit) {
+                                String attrEl = el.attr(attr);
+                                if (isOnlyRussian(attrEl))
+                                    initData.add(attrEl);
                             }
-                            if (!inner.contains("@")) {
-                                Elements els = el.selectXpath(inner);
-                                if (els.size() > 1) {
-                                    for (Element toAttr : els) {
-                                        if (isOnlyRussian(toAttr.text()))
-                                            initData.add(toAttr.text());
-                                    }
+                        }
+                        if (!type.innerXpathToInit.isEmpty()) {
+                            for (String inner : type.innerXpathToInit) {
+                                String attr = null;
+                                if (inner.equals(".")) {
+                                    attr = el.text();
+                                    if (isOnlyRussian(attr))
+                                        initData.add(attr);
                                     continue;
                                 }
-                                else {
-                                    attr = els.text();
+                                if (!inner.contains("@")) {
+                                    Elements els = el.selectXpath(inner);
+                                    if (els.size() > 1) {
+                                        for (Element toAttr : els) {
+                                            if (isOnlyRussian(toAttr.text()))
+                                                initData.add(toAttr.text());
+                                        }
+                                        continue;
+                                    }
+                                    else {
+                                        attr = els.text();
+                                    }
                                 }
+                                else {
+                                    attr = el.selectXpath(inner.substring(0,inner.indexOf('@') - 1))
+                                            .attr(inner.substring(inner.indexOf('@') + 1));
+                                }
+                                if (isOnlyRussian(attr))
+                                    initData.add(attr);
                             }
-                            else {
-                                attr = el.selectXpath(inner.substring(0,inner.indexOf('@') - 1))
-                                        .attr(inner.substring(inner.indexOf('@') + 1));
+                        }
+                        if (!initData.isEmpty()) {
+                            var.toInit = findLongestString(initData);
+                            var.varName = transliterate(var.toInit);
+                            if (vars.stream().anyMatch(e -> e.varName.equals(var.getVarName()))) {
+                                var.needIndex = true;
+                                var.index = vars.stream()
+                                        .filter(e -> e.varName.equals(var.getVarName())).count() + 1;
                             }
-                            if (isOnlyRussian(attr))
-                                initData.add(attr);
+                            vars.add(var);
+                            el.remove();
                         }
-                    }
-                    if (!initData.isEmpty()) {
-                        var.toInit = findLongestString(initData);
-                        var.varName = transliterate(var.toInit);
-                        if (vars.stream().anyMatch(e -> e.varName.equals(var.getVarName()))) {
-                            var.needIndex = true;
-                            var.index = vars.stream()
-                                    .filter(e -> e.varName.equals(var.getVarName())).count() + 1;
-                        }
-                        vars.add(var);
-                        el.remove();
                     }
                 }
-            }
-            model.vars.addAll(vars);
+                model.vars.addAll(vars);
+            });
         }
         return model;
     }
