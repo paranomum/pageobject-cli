@@ -39,9 +39,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static ru.paranomum.page_object.utils.StringUtils.*;
 
@@ -153,11 +155,10 @@ public class DefaultGenerator implements Generator {
         model.className = file.className;
 
         if (doc != null) {
-            Document finalDoc = doc;
-            configModel.getConfiguration().stream().parallel().forEach(type -> {
+            for (WebElementTypes type : configModel.getConfiguration()) {
                 List<VarModelCodegen> vars = new ArrayList<>();
                 List<DataVar> dataVars = new ArrayList<>();
-                Elements elements = finalDoc.selectXpath(type.xpath);
+                Elements elements = doc.selectXpath(type.xpath);
                 if (!elements.isEmpty()) {
                     model.setImport(Map.of("import", type.toImport));
                     for (Element el : elements) {
@@ -165,20 +166,19 @@ public class DefaultGenerator implements Generator {
                         VarModelCodegen var = new VarModelCodegen();
                         var.type = type.type;
                         if (!type.attributeToInit.isEmpty()) {
-                            for (String attr : type.attributeToInit) {
+                            type.attributeToInit.stream().parallel().forEach(attr -> {
                                 String attrEl = el.attr(attr);
                                 if (isOnlyRussian(attrEl))
                                     initData.add(attrEl);
-                            }
+                            });
                         }
                         if (!type.innerXpathToInit.isEmpty()) {
-                            for (String inner : type.innerXpathToInit) {
-                                String attr;
+                            type.innerXpathToInit.stream().parallel().forEach(inner -> {
+                                String attr = "";
                                 if (inner.equals(".")) {
                                     attr = el.text();
                                     if (isOnlyRussian(attr))
                                         initData.add(attr);
-                                    continue;
                                 }
                                 if (!inner.contains("@")) {
                                     Elements els = el.selectXpath(inner);
@@ -187,7 +187,6 @@ public class DefaultGenerator implements Generator {
                                             if (isOnlyRussian(toAttr.text()))
                                                 initData.add(toAttr.text());
                                         }
-                                        continue;
                                     }
                                     else {
                                         attr = els.text();
@@ -199,7 +198,7 @@ public class DefaultGenerator implements Generator {
                                 }
                                 if (isOnlyRussian(attr))
                                     initData.add(attr);
-                            }
+                            });
                         }
                         if (!initData.isEmpty()) {
                             var.toInit = findLongestString(initData);
@@ -222,6 +221,15 @@ public class DefaultGenerator implements Generator {
                                     dataVar.init = toInit.initData();
                                 }
                                 dataVars.add(dataVar);
+                                if(type.override != null) {
+                                    char charAr[] = (model.className  + "Data").toCharArray();
+                                    if (Character.isUpperCase(charAr[0]))
+                                        charAr[0] += 32;
+                                    var.override.addAll(analyzeOverrideData(new String(charAr), var, dataVar, type.override));
+                                    if (!var.override.isEmpty()) {
+                                        var.needToChangeData = true;
+                                    }
+                                }
                             }
                             vars.add(var);
                             el.remove();
@@ -230,16 +238,54 @@ public class DefaultGenerator implements Generator {
                 }
                 model.vars.addAll(vars);
                 model.dataVars.addAll(dataVars);
-            });
+            }
         }
         if (!model.dataVars.isEmpty()) {
             model.hasDataVars = true;
             char c[] = model.className.toCharArray();
             if (Character.isUpperCase(c[0]))
                 c[0] += 32;
-            model.dataVarName = new String(c);
+            model.dataVarName = new String(c) + "Data";
         }
         return model;
+    }
+
+    private List<OverrideData> analyzeOverrideData(String dataVarName, VarModelCodegen var, DataVar dataVar, Map<String, String> overrideData) {
+        List<OverrideData> overrideList = new ArrayList<>();
+        for (String key : overrideData.keySet()) {
+            OverrideData override = new OverrideData();
+            override.methodToOverride = key;
+            override.setData = overrideData.get(key);
+            override.varDataToSet = dataVar.name;
+            override.dataVarName = dataVarName;
+            if (override.setData.contains("= !")) {
+                override.setData = override.setData + dataVarName + "." + dataVar.name;
+            }
+            Pattern pFindMethodData = Pattern.compile("(\\([a-zA-Z<>, ]+\\))");
+            Pattern pFindOverrideMethod = Pattern.compile("([a-zA-Z]+\\()");
+            Matcher mFindMethodData = pFindMethodData.matcher(key);
+            Matcher mFindOverrideMethod = pFindOverrideMethod.matcher(key);
+
+            while(mFindOverrideMethod.find()) {
+                override.overrideMethod = mFindOverrideMethod.group().replace(")", "");
+            }
+
+            while(mFindMethodData.find()) {
+                StringBuilder allVars = new StringBuilder();
+                String methodData = mFindMethodData.group().replace("(", "").replace(")", "");
+                Arrays.stream(methodData.split(" ")).parallel().forEach(mayVars -> {
+                    if (!Character.isUpperCase(mayVars.charAt(0))
+                            && mayVars.charAt(0) != '<'
+                            && VariableTypesEnum.valueOfLabel(mayVars) == null) {
+                        allVars.append(mayVars);
+                    }
+                });
+
+                override.methodData = allVars.toString();
+            }
+            overrideList.add(override);
+        }
+        return overrideList;
     }
 
     private final Set<String> seenFiles = new HashSet<>();
@@ -247,7 +293,7 @@ public class DefaultGenerator implements Generator {
     private void processTemplateToFile(List<ModelCodegen> models, String outputDir){
         models.stream().parallel().forEach(templateData -> {
             LOGGER.info("Generating class with name {}", templateData.className);
-            Path outDir = java.nio.file.Paths.get(outputDir).toAbsolutePath();
+            Path outDir = Paths.get(outputDir).toAbsolutePath();
             String adjustedOutputFilename = outDir + "/" + templateData.className + ".java";
             File target = new File(adjustedOutputFilename);
             Path absoluteTarget = target.toPath().toAbsolutePath();

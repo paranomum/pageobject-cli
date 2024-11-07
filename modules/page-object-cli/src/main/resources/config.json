@@ -10,7 +10,8 @@
       "innerXpathToInit": [
         ".//input/@ng-reflect-placeholder", ".//input/@placeholder", ".//input/@data-placeholder", ".//mat-label"
       ],
-      "dataType": "List<String>"
+      "dataType": "List<String>",
+      "override": {"public void selectOption()": ".addAll(getOptionsAsString())"}
     },
     {
       "type": "ListBox",
@@ -20,7 +21,8 @@
       "innerXpathToInit": [
         ".//input/@ng-reflect-placeholder", ".//input/@placeholder", ".//input/@data-placeholder", ".//mat-label"
       ],
-      "dataType": "List<String>"
+      "dataType": "List<String>",
+      "override": {"public void selectOption()": ".addAll(getOptionsAsString())"}
     },
     {
       "type": "MatRadioGroup",
@@ -30,7 +32,8 @@
       "innerXpathToInit": [
         ".//input/@ng-reflect-placeholder", ".//input/@placeholder", ".//input/@data-placeholder", ".//mat-label", "./label"
       ],
-      "dataType": "String"
+      "dataType": "String",
+      "override": {"public void selectOption()": ".add(getOptionsAsString().get(0))"}
     },
     {
       "type": "MatSelect",
@@ -43,7 +46,8 @@
       "innerXpathToInit": [
         ".//mat-label", ".//label"
       ],
-      "dataType": "List<String>"
+      "dataType": "List<String>",
+      "override": {"public void selectOption()": ".addAll(getOptionsAsString())"}
     },
     {
       "type": "MatRadioButton",
@@ -53,7 +57,8 @@
       "innerXpathToInit": [
         ".", ".//span[@class='mat-radio-label-content']", ".//span"
       ],
-      "dataType": "List<String>"
+      "dataType": "List<String>",
+      "override": {"public void selectOption()": ".addAll(getOptionsAsString())"}
     },
     {
       "type": "SlideToggle",
@@ -63,7 +68,8 @@
       "innerXpathToInit": [
         ".//*", "."
       ],
-      "dataType": "Boolean"
+      "dataType": "Boolean",
+      "override": {"public void click()": " = !"}
     },
     {
       "type": "TabButton",
@@ -73,7 +79,8 @@
       "innerXpathToInit": [
         ".//*"
       ],
-      "dataType": null
+      "dataType": null,
+      "override": null
     },
     {
       "type": "CheckBox",
@@ -85,7 +92,8 @@
       "innerXpathToInit": [
         ".//h3", ".//span"
       ],
-      "dataType": "Boolean"
+      "dataType": "Boolean",
+      "override": {"public void click()": " = !"}
     },
     {
       "type": "Field",
@@ -95,7 +103,8 @@
         "placeholder", "data-placeholder"
       ],
       "innerXpathToInit": [],
-      "dataType": "String"
+      "dataType": "String",
+      "override": {"public void fill(String value)": " = value"}
     },
     {
       "type": "Button",
@@ -107,7 +116,8 @@
       "innerXpathToInit": [
         ".//*/@aria-label", ".//span"
       ],
-      "dataType": null
+      "dataType": null,
+      "override": null
     },
     {
       "type": "LinkButton",
@@ -119,7 +129,8 @@
       "innerXpathToInit": [
         ".//h3", ".//span"
       ],
-      "dataType": null
+      "dataType": null,
+      "override": null
     }
   ]
 }

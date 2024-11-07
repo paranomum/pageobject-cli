@@ -16,7 +16,16 @@ public class {{className}} {
 {{/hasDataVars}}
 
 {{#vars}}
-    private final {{type}} {{varName}}{{type}} = new {{type}}("{{toInit}}"{{#needIndex}}, {{index}}{{/needIndex}});
+    private final {{type}} {{varName}}{{type}} = new {{type}}("{{toInit}}"{{#needIndex}}, {{index}}{{/needIndex}}){{^needToChangeData}};{{/needToChangeData}}{{#needToChangeData}} {
+    {{#override}}
+        @Override
+        {{&methodToOverride}} {
+            super.{{&overrideMethod}}({{methodData}});
+            {{dataVarName}}.{{varDataToSet}}{{&setData}};
+        }
+    {{/override}}
+    };{{/needToChangeData}}
+
 {{/vars}}
 
 {{#hasDataVars}}
@@ -27,7 +36,7 @@ public class {{className}} {
     @AllArgsConstructor
     public static class {{className}}Data {
     {{#dataVars}}
-        private final {{&type}} {{name}}{{#needToInit}}= {{&init}}{{/needToInit}};
+        private final {{&type}} {{name}}{{#needToInit}} = {{&init}}{{/needToInit}};
     {{/dataVars}}
     }
 {{/hasDataVars}}
