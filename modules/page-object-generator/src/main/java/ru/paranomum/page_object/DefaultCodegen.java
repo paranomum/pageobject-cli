@@ -17,18 +17,13 @@
 
 package ru.paranomum.page_object;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.Ticker;
 import com.github.jknack.handlebars.internal.text.StringEscapeUtils;
-import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache.Compiler;
 import com.samskivert.mustache.Mustache.Lambda;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.paranomum.page_object.api.TemplatingEngineAdapter;
@@ -44,14 +39,11 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static ru.paranomum.page_object.utils.StringUtils.camelize;
 import static ru.paranomum.page_object.utils.StringUtils.escape;

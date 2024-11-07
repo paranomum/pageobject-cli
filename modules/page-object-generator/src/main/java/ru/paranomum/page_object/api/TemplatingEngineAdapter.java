@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Each templating engine is called by an Adapter, selected at runtime

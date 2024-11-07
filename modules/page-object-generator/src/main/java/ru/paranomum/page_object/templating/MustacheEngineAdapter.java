@@ -20,18 +20,16 @@ import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
 import lombok.Getter;
 import lombok.Setter;
-import ru.paranomum.page_object.CodegenConstants;
-import ru.paranomum.page_object.api.TemplatingEngineAdapter;
-import ru.paranomum.page_object.api.TemplatingExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.paranomum.page_object.api.TemplatingEngineAdapter;
+import ru.paranomum.page_object.api.TemplatingExecutor;
 import ru.paranomum.page_object.model.ModelCodegen;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Map;
 
 
 public class MustacheEngineAdapter implements TemplatingEngineAdapter {

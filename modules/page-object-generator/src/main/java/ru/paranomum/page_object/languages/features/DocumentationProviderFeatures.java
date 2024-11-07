@@ -2,11 +2,7 @@ package ru.paranomum.page_object.languages.features;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * The DocumentationProvider Features support to additional properties to select the

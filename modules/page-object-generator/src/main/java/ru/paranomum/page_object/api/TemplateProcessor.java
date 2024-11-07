@@ -5,7 +5,6 @@ import ru.paranomum.page_object.model.ModelCodegen;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
 
 /**
  * Interface for abstractions around writing templated data to a file.

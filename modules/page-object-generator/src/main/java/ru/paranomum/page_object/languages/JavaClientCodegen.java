@@ -20,29 +20,16 @@ package ru.paranomum.page_object.languages;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import ru.paranomum.page_object.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.paranomum.page_object.CliOption;
+import ru.paranomum.page_object.CodegenConstants;
 import ru.paranomum.page_object.languages.features.BeanValidationFeatures;
 import ru.paranomum.page_object.languages.features.GzipFeatures;
 import ru.paranomum.page_object.languages.features.PerformBeanValidationFeatures;
-import ru.paranomum.page_object.meta.features.DocumentationFeature;
-import ru.paranomum.page_object.meta.features.GlobalFeature;
-import ru.paranomum.page_object.meta.features.SecurityFeature;
-import ru.paranomum.page_object.templating.mustache.CaseFormatLambda;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.google.common.base.CaseFormat.LOWER_CAMEL;
-import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
-import static java.util.Collections.sort;
-import static ru.paranomum.page_object.utils.CamelizeOption.LOWERCASE_FIRST_LETTER;
-import static ru.paranomum.page_object.utils.StringUtils.camelize;
 
 public class JavaClientCodegen extends AbstractJavaCodegen
         implements BeanValidationFeatures, PerformBeanValidationFeatures, GzipFeatures {

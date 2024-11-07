@@ -16,6 +16,7 @@
  */
 
 package ru.paranomum.page_object;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -43,7 +44,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static ru.paranomum.page_object.utils.StringUtils.*;
 

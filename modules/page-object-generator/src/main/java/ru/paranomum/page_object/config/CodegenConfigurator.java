@@ -24,7 +24,9 @@ import ru.paranomum.page_object.*;
 import ru.paranomum.page_object.api.TemplateDefinition;
 import ru.paranomum.page_object.api.TemplatingEngineAdapter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 

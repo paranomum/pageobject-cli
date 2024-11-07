@@ -7,13 +7,11 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import ru.paranomum.page_object.config.GlobalSettings;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.Map.entry;
 import static ru.paranomum.page_object.utils.CamelizeOption.UPPERCASE_FIRST_CHAR;
 
 public class StringUtils {

@@ -30,17 +30,16 @@ import com.github.jknack.handlebars.io.StringTemplateSource;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.paranomum.page_object.api.AbstractTemplatingEngineAdapter;
 import ru.paranomum.page_object.api.TemplatingExecutor;
 import ru.paranomum.page_object.model.ModelCodegen;
 import ru.paranomum.page_object.templating.handlebars.AccessAwareFieldValueResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Map;
 
 public class HandlebarsEngineAdapter extends AbstractTemplatingEngineAdapter {
     final Logger LOGGER = LoggerFactory.getLogger(HandlebarsEngineAdapter.class);
