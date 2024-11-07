@@ -53,12 +53,8 @@ public class DefaultGenerator implements Generator {
     private final boolean dryRun;
     protected CodegenConfig config;
     protected ClientOptInput opts;
-    private Boolean generateSupportingFiles = null;
-    private Boolean generateModelTests = null;
-    private Boolean generateModelDocumentation = null;
     private String basePath;
     private String contextPath;
-    private Map<String, String> generatorPropertyDefaults = new HashMap<>();
 
     private InputSpecModel files = null;
     private List<ModelCodegen> modelsToGenerate = new ArrayList<>();
@@ -177,7 +173,7 @@ public class DefaultGenerator implements Generator {
                         }
                         if (!type.innerXpathToInit.isEmpty()) {
                             for (String inner : type.innerXpathToInit) {
-                                String attr = null;
+                                String attr;
                                 if (inner.equals(".")) {
                                     attr = el.text();
                                     if (isOnlyRussian(attr))
@@ -207,7 +203,10 @@ public class DefaultGenerator implements Generator {
                         }
                         if (!initData.isEmpty()) {
                             var.toInit = findLongestString(initData);
-                            var.varName = transliterate(var.toInit);
+                            char c[] = transliterate(var.toInit).toCharArray();
+                            if (Character.isUpperCase(c[0]))
+                                c[0] += 32;
+                            var.varName = new String(c);
                             if (vars.stream().anyMatch(e -> e.varName.equals(var.getVarName()))) {
                                 var.needIndex = true;
                                 var.index = vars.stream()
@@ -236,7 +235,8 @@ public class DefaultGenerator implements Generator {
         if (!model.dataVars.isEmpty()) {
             model.hasDataVars = true;
             char c[] = model.className.toCharArray();
-            c[0] += 32;
+            if (Character.isUpperCase(c[0]))
+                c[0] += 32;
             model.dataVarName = new String(c);
         }
         return model;
