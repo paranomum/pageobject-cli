@@ -13,6 +13,10 @@ public class ModelCodegen {
 	public List<Map<String, String>> imports = new ArrayList<>();
 	public List<VarModelCodegen> vars = new ArrayList<>();
 
+	public boolean hasDataVars = false;
+	public String dataVarName;
+	public List<DataVar> dataVars = new ArrayList<>();
+
 	public void setImport(Map<String, String> imports) {
 		this.imports.add(imports);
 	}

@@ -9,7 +9,8 @@
       "attributeToInit": [],
       "innerXpathToInit": [
         ".//input/@ng-reflect-placeholder", ".//input/@placeholder", ".//input/@data-placeholder", ".//mat-label"
-      ]
+      ],
+      "dataType": "List<String>"
     },
     {
       "type": "ListBox",
@@ -18,7 +19,8 @@
       "attributeToInit": [],
       "innerXpathToInit": [
         ".//input/@ng-reflect-placeholder", ".//input/@placeholder", ".//input/@data-placeholder", ".//mat-label"
-      ]
+      ],
+      "dataType": "List<String>"
     },
     {
       "type": "MatRadioGroup",
@@ -27,7 +29,8 @@
       "attributeToInit": [],
       "innerXpathToInit": [
         ".//input/@ng-reflect-placeholder", ".//input/@placeholder", ".//input/@data-placeholder", ".//mat-label", "./label"
-      ]
+      ],
+      "dataType": "String"
     },
     {
       "type": "MatSelect",
@@ -39,7 +42,8 @@
       ],
       "innerXpathToInit": [
         ".//mat-label", ".//label"
-      ]
+      ],
+      "dataType": "List<String>"
     },
     {
       "type": "MatRadioButton",
@@ -48,7 +52,8 @@
       "attributeToInit": [],
       "innerXpathToInit": [
         ".", ".//span[@class='mat-radio-label-content']", ".//span"
-      ]
+      ],
+      "dataType": "List<String>"
     },
     {
       "type": "SlideToggle",
@@ -57,7 +62,8 @@
       "attributeToInit": [],
       "innerXpathToInit": [
         ".//*", "."
-      ]
+      ],
+      "dataType": "Boolean"
     },
     {
       "type": "TabButton",
@@ -66,7 +72,8 @@
       "attributeToInit": [],
       "innerXpathToInit": [
         ".//*"
-      ]
+      ],
+      "dataType": null
     },
     {
       "type": "CheckBox",
@@ -77,7 +84,8 @@
       ],
       "innerXpathToInit": [
         ".//h3", ".//span"
-      ]
+      ],
+      "dataType": "Boolean"
     },
     {
       "type": "Field",
@@ -86,7 +94,8 @@
       "attributeToInit": [
         "placeholder", "data-placeholder"
       ],
-      "innerXpathToInit": []
+      "innerXpathToInit": [],
+      "dataType": "String"
     },
     {
       "type": "Button",
@@ -97,7 +106,8 @@
       ],
       "innerXpathToInit": [
         ".//*/@aria-label", ".//span"
-      ]
+      ],
+      "dataType": null
     },
     {
       "type": "LinkButton",
@@ -108,7 +118,8 @@
       ],
       "innerXpathToInit": [
         ".//h3", ".//span"
-      ]
+      ],
+      "dataType": null
     }
   ]
 }

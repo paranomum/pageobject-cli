@@ -40,10 +40,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static ru.paranomum.page_object.utils.StringUtils.*;
 
@@ -162,6 +160,7 @@ public class DefaultGenerator implements Generator {
             Document finalDoc = doc;
             configModel.getConfiguration().stream().parallel().forEach(type -> {
                 List<VarModelCodegen> vars = new ArrayList<>();
+                List<DataVar> dataVars = new ArrayList<>();
                 Elements elements = finalDoc.selectXpath(type.xpath);
                 if (!elements.isEmpty()) {
                     model.setImport(Map.of("import", type.toImport));
@@ -214,13 +213,31 @@ public class DefaultGenerator implements Generator {
                                 var.index = vars.stream()
                                         .filter(e -> e.varName.equals(var.getVarName())).count() + 1;
                             }
+                            if (type.dataType != null && DataTypeEnum.valueOfLabel(type.dataType) != null) {
+                                DataVar dataVar = new DataVar();
+                                DataTypeEnum toInit = DataTypeEnum.valueOfLabel(type.dataType);
+                                dataVar.name = var.varName;
+                                dataVar.type = toInit.toString();
+                                if (toInit.initData() != null) {
+                                    dataVar.needToInit = true;
+                                    dataVar.init = toInit.initData();
+                                }
+                                dataVars.add(dataVar);
+                            }
                             vars.add(var);
                             el.remove();
                         }
                     }
                 }
                 model.vars.addAll(vars);
+                model.dataVars.addAll(dataVars);
             });
+        }
+        if (!model.dataVars.isEmpty()) {
+            model.hasDataVars = true;
+            char c[] = model.className.toCharArray();
+            c[0] += 32;
+            model.dataVarName = new String(c);
         }
         return model;
     }

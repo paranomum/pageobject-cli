@@ -8,4 +8,5 @@ public class WebElementTypes {
 	public String toImport;
 	public List<String> attributeToInit;
 	public List<String> innerXpathToInit;
+	public String dataType;
 }
