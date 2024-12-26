@@ -215,10 +215,21 @@ public class DefaultGenerator implements Generator {
                                 DataVar dataVar = new DataVar();
                                 DataTypeEnum toInit = DataTypeEnum.valueOfLabel(type.dataType);
                                 dataVar.name = var.varName;
+                                if (var.needIndex) {
+                                    dataVar.name = var.varName + transliterate(String.valueOf(var.index));
+                                }
                                 dataVar.type = toInit.toString();
                                 if (toInit.initData() != null) {
                                     dataVar.needToInit = true;
                                     dataVar.init = toInit.initData();
+                                }
+                                if (toInit.imports() != null) {
+                                    for (String importStr : toInit.imports()) {
+                                        if (model.getImports().stream()
+                                                .noneMatch(map -> importStr.equals(map.get("import")))) {
+                                            model.setImport(Map.of("import", importStr));
+                                        }
+                                    }
                                 }
                                 dataVars.add(dataVar);
                                 if(type.override != null) {
@@ -236,7 +247,7 @@ public class DefaultGenerator implements Generator {
                         }
                     }
                 }
-                model.vars.addAll(vars);
+                model.vars.addAll(parseVarsNames(vars));
                 model.dataVars.addAll(dataVars);
             }
         }
@@ -267,7 +278,7 @@ public class DefaultGenerator implements Generator {
             Matcher mFindOverrideMethod = pFindOverrideMethod.matcher(key);
 
             while(mFindOverrideMethod.find()) {
-                override.overrideMethod = mFindOverrideMethod.group().replace(")", "");
+                override.overrideMethod = mFindOverrideMethod.group().replace(")", "").replace("(", "");
             }
 
             while(mFindMethodData.find()) {
@@ -309,5 +320,14 @@ public class DefaultGenerator implements Generator {
                 this.templateProcessor.write(templateData, "page-object-class.mustache", target);
             } catch (IOException ignore) {}
         });
+    }
+
+    private List<VarModelCodegen> parseVarsNames(List<VarModelCodegen> vars) {
+        for (VarModelCodegen var : vars) {
+            if (var.needIndex) {
+                var.varName = var.varName + transliterate(String.valueOf(var.index));
+            }
+        }
+        return vars;
     }
 }

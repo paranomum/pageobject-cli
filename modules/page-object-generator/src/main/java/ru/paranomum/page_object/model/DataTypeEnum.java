@@ -1,17 +1,23 @@
 package ru.paranomum.page_object.model;
 
+import java.util.List;
+
 public enum DataTypeEnum {
-	STRING("String", null),
-	INTEGER("Integer", null),
-	BOOLEAN("Boolean", null),
-	LIST_STRING("List<String>", "new ArrayList<>()");
+	STRING("String", null, null),
+	INTEGER("Integer", null, null),
+	BOOLEAN("Boolean", null, null),
+	LIST_STRING("List<String>", "new ArrayList<>()",
+			List.of("java.util.ArrayList",
+			"java.util.List"));
 
 	private final String stringType;
 	private final String initData;
+	private final List<String> imports;
 
-	private DataTypeEnum(String stringType, String initData) {
+	private DataTypeEnum(String stringType, String initData, List<String> imports) {
 		this.stringType = stringType;
 		this.initData = initData;
+		this.imports = imports;
 	}
 
 	public boolean equals(String otherStringType) {
@@ -23,6 +29,9 @@ public enum DataTypeEnum {
 	}
 	public String initData() {
 		return this.initData;
+	}
+	public List<String> imports() {
+		return this.imports;
 	}
 
 

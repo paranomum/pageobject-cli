@@ -7,11 +7,15 @@ import {{import}};
 import lombok.*;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class {{className}} {
+
+    public {{className}}(){}
 {{#hasDataVars}}
     private {{className}}Data {{dataVarName}} = new {{className}}Data();
+
+    public {{className}}({{className}}Data {{dataVarName}}) {
+        this.{{dataVarName}} = {{dataVarName}};
+    }
 {{/hasDataVars}}
 
 {{#vars}}
@@ -31,11 +35,12 @@ public class {{className}} {
     @Getter
     @Setter
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class {{className}}Data {
+
+        public {{className}}Data(){}
+
     {{#dataVars}}
-        private final {{&type}} {{name}}{{#needToInit}} = {{&init}}{{/needToInit}};
+        private {{&type}} {{name}}{{#needToInit}} = {{&init}}{{/needToInit}};
     {{/dataVars}}
     }
 {{/hasDataVars}}

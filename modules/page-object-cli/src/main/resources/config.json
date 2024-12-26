@@ -5,7 +5,7 @@
     {
       "type": "OptionField",
       "xpath": "//mat-form-field[.//input[(contains(@ng-reflect-placeholder,'') or contains(@placeholder, '') or contains(@data-placeholder, '')) and @role='combobox']]",
-      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.OptionField",
+      "toImport": "ru.rt.iqhr.pageobject.angular.web_elements.selections.OptionField",
       "attributeToInit": [],
       "innerXpathToInit": [
         ".//input/@ng-reflect-placeholder", ".//input/@placeholder", ".//input/@data-placeholder", ".//mat-label"
@@ -16,7 +16,7 @@
     {
       "type": "ListBox",
       "xpath": "//mat-chip-list[.//input[contains(@placeholder, '') and aria-haspopup='listbox']]",
-      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.ListBox",
+      "toImport": "ru.rt.iqhr.pageobject.angular.web_elements.selections.ListBox",
       "attributeToInit": [],
       "innerXpathToInit": [
         ".//input/@ng-reflect-placeholder", ".//input/@placeholder", ".//input/@data-placeholder", ".//mat-label"
@@ -27,7 +27,7 @@
     {
       "type": "MatRadioGroup",
       "xpath": "//div[label[contains(text(), '')]]/mat-radio-group",
-      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.MatRadioGroup",
+      "toImport": "ru.rt.iqhr.pageobject.angular.web_elements.selections.MatRadioGroup",
       "attributeToInit": [],
       "innerXpathToInit": [
         ".//input/@ng-reflect-placeholder", ".//input/@placeholder", ".//input/@data-placeholder", ".//mat-label", "./label"
@@ -38,7 +38,7 @@
     {
       "type": "MatSelect",
       "xpath": "(//mat-select[contains(@ng-reflect-placeholder, '') or contains(@placeholder, '')] | //div[mat-select and .//mat-label[contains(text(), '')]]/mat-select)",
-      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.MatSelect",
+      "toImport": "ru.rt.iqhr.pageobject.angular.web_elements.selections.MatSelect",
       "attributeToInit": [
         "ng-reflect-placeholder",
         "placeholder"
@@ -52,7 +52,7 @@
     {
       "type": "MatRadioButton",
       "xpath": "//mat-radio-button[contains(.//span, '') or contains(text(), '') or .//span[@class='mat-radio-label-content' and contains(text(), '')]]",
-      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.MatRadioButton",
+      "toImport": "ru.rt.iqhr.pageobject.angular.web_elements.selections.MatRadioButton",
       "attributeToInit": [],
       "innerXpathToInit": [
         ".", ".//span[@class='mat-radio-label-content']", ".//span"
@@ -63,7 +63,7 @@
     {
       "type": "SlideToggle",
       "xpath": "//mat-slide-toggle[.//*[contains(text(), '')] or contains(text(), '')]",
-      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.SlideToggle",
+      "toImport": "ru.rt.iqhr.pageobject.angular.web_elements.selections.SlideToggle",
       "attributeToInit": [],
       "innerXpathToInit": [
         ".//*", "."
@@ -74,7 +74,7 @@
     {
       "type": "TabButton",
       "xpath": "//div[@role='tab' and contains(.//*, '')]",
-      "toImport": "ru.rt.iqhr.pageobject.web_elements.selections.TabButton",
+      "toImport": "ru.rt.iqhr.pageobject.angular.web_elements.selections.TabButton",
       "attributeToInit": [],
       "innerXpathToInit": [
         ".//*"
@@ -85,7 +85,7 @@
     {
       "type": "CheckBox",
       "xpath": "//mat-checkbox[contains(.//span, '') or contains(text(), '') or .//span[@class='mat-checkbox-label' and contains(text(), '')]]",
-      "toImport": "ru.rt.iqhr.pageobject.web_elements.buttons.CheckBox",
+      "toImport": "ru.rt.iqhr.pageobject.angular.web_elements.buttons.CheckBox",
       "attributeToInit": [
         "href", "ng-reflect-message"
       ],
@@ -98,7 +98,7 @@
     {
       "type": "Field",
       "xpath": "(//input[contains(@data-placeholder,'') or contains(@placeholder, '')] | //textarea[contains(@data-placeholder, '') or contains(@placeholder, '')])",
-      "toImport": "ru.rt.iqhr.pageobject.web_elements.Field",
+      "toImport": "ru.rt.iqhr.pageobject.angular.web_elements.Field",
       "attributeToInit": [
         "placeholder", "data-placeholder"
       ],
@@ -109,7 +109,7 @@
     {
       "type": "Button",
       "xpath": "//button[contains(.//span, '') or contains(@ng-reflect-message, '') or contains(.//@aria-label, '') or contains(., '')]",
-      "toImport": "ru.rt.iqhr.pageobject.web_elements.buttons.Button",
+      "toImport": "ru.rt.iqhr.pageobject.angular.web_elements.buttons.Button",
       "attributeToInit": [
         "ng-reflect-message"
       ],
@@ -122,7 +122,7 @@
     {
       "type": "LinkButton",
       "xpath": "//a[contains(@ng-reflect-message, '') or contains(.//span, '') or contains(@href, '') or contains(text(), '') or .//h3[contains(text(), '')]]",
-      "toImport": "ru.rt.iqhr.pageobject.web_elements.buttons.LinkButton",
+      "toImport": "ru.rt.iqhr.pageobject.angular.web_elements.buttons.LinkButton",
       "attributeToInit": [
         "href", "ng-reflect-message"
       ],

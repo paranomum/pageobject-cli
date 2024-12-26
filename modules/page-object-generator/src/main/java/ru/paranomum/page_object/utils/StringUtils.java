@@ -25,6 +25,17 @@ public class StringUtils {
     public static final String NAME_CACHE_EXPIRY_PROPERTY = "ru.paranomum.page_object.utils.namecache.expireafter.seconds";
 
     private static final Map<Character, String> translitMap = Map.ofEntries(
+            Map.entry('0', "Zero"),
+            Map.entry('1', "One"),
+            Map.entry('2', "Two"),
+            Map.entry('3', "Three"),
+            Map.entry('4', "Four"),
+            Map.entry('5', "Five"),
+            Map.entry('6', "Six"),
+            Map.entry('7', "Seven"),
+            Map.entry('8', "Eight"),
+            Map.entry('9', "Nine"),
+
             Map.entry('а', "a"),
             Map.entry('б', "b"),
             Map.entry('в', "v"),
